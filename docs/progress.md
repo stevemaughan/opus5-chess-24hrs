@@ -65,3 +65,30 @@ static linking is trivial with `-static`.
   counts.
 - Elo estimate: not yet measured. Gauntlet vs Stash 17/20/21 starting now.
 - Next hour: baseline strength measurement, then A/B the pruning aggressiveness.
+
+## Correction to time-keeping
+Earlier entries were labelled "Hour 2" by mistake — actual wall-clock elapsed at that
+point was ~0.7 h. Tool round-trips are much faster than I assumed. Entries below use
+measured elapsed time against `docs/start_time.txt`.
+
+## Hour 0.8 — 2026-08-21 13:30
+- **First strength measurement** (gauntlet, 10+0.1, Hash 256, UHO book, 78 games so far):
+  | Opponent | CCRL | My score | Implied |
+  |---|---|---|---|
+  | stash-21 | ~2710 | 75.0% | ~2900 |
+  | stash-20 | ~2510 | 86.5% | ~2840 |
+  | stash-17 | ~2300 | 96.4% | ~2860 |
+  Consistent across all three: **~2850-2900 Elo**, wide error bars (24-28 games each).
+- This overturns my hour-0.7 worry that the search was over-pruned. The small tree is
+  buying real depth (depth ~20 in 450 ms at 10+0.1). I am dropping the node-count line
+  of investigation entirely — it was a bad proxy — and will settle all further search
+  questions with SPRT.
+- **Bug found from the match log and fixed:** fastchess warned "Bestmove does not match
+  beginning of last PV". When an iteration was aborted on the clock I re-sorted the root
+  move list while it held a mix of fresh `-INF` scores and stale ones from the previous
+  iteration, so the engine could play a move it had never validated. Now the best line is
+  published the moment a root move is confirmed (a point only reached when the search was
+  not aborted), and both the PV output and `bestmove` read from it. Verified consistent.
+- Elo estimate: **~2870 (+/- ~70)**.
+- Next: finish the gauntlet, deploy the PV fix, then bracket the top end against
+  stash-25 (~2940) and stash-30 (~3170).

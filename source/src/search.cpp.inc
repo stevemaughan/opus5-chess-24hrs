@@ -26,6 +26,9 @@ int64_t OptimumTime;
 int64_t MaximumTime;
 bool    UseTimeMan = false;
 
+std::vector<Move> BestPV;
+Value BestScore = -VALUE_INFINITE;
+int  BestSelDepth;
 int  NmpMinPly;
 int  RootDepth;
 int  CompletedDepth;
@@ -222,11 +225,10 @@ std::string uci_score(Value v) {
 
 void print_info(const Position& pos, int depth, Value score, bool bounded, Bound b) {
     int64_t t = std::max<int64_t>(1, elapsed());
-    const RootMove& rm = RootMoves[0];
 
     std::ostringstream ss;
     ss << "info depth " << depth
-       << " seldepth " << rm.selDepth
+       << " seldepth " << BestSelDepth
        << " score " << uci_score(score);
     if (bounded) ss << (b == BOUND_LOWER ? " lowerbound" : " upperbound");
     ss << " nodes " << Nodes
@@ -234,7 +236,7 @@ void print_info(const Position& pos, int depth, Value score, bool bounded, Bound
        << " hashfull " << TT.hashfull()
        << " time " << t
        << " pv";
-    for (Move m : rm.pv) {
+    for (Move m : BestPV) {
         if (m == MOVE_NONE) break;
         ss << ' ' << uci_move(m);
     }
@@ -740,6 +742,17 @@ moves_loop:
                     rm.selDepth = SelDepth;
                     rm.pv.resize(1);
                     for (Move* m = (ss + 1)->pv; m && *m != MOVE_NONE; ++m) rm.pv.push_back(*m);
+
+                    // Publish the new best line straight away.  This point is only
+                    // reached when the search was NOT aborted, so whatever we finally
+                    // report as bestmove is always a move we finished searching, and
+                    // always matches the last PV we printed.  Re-sorting the root list
+                    // after an aborted iteration mixes fresh -INF scores with stale ones
+                    // and can otherwise surface a move that was never validated.
+                    BestPV = rm.pv;
+                    BestScore = value;
+                    BestSelDepth = SelDepth;
+
                     if (moveCount > 1) ++BestMoveChanges;
                 } else {
                     rm.score = -VALUE_INFINITE;
@@ -841,6 +854,11 @@ void think(Position& pos) {
         return;
     }
 
+    // Always have a legal move ready to report, even if we are stopped instantly.
+    BestPV.assign(1, RootMoves[0].pv[0]);
+    BestScore = -VALUE_INFINITE;
+    BestSelDepth = 0;
+
     // Stack with room for the ss-6 .. ss+2 accesses
     Stack stack[MAX_PLY + 12] = {};
     Stack* ss = stack + 7;
@@ -882,9 +900,10 @@ void think(Position& pos) {
             int adjustedDepth = std::max(1, RootDepth - failedHighCnt);
             bestValue = search<Root>(pos, ss, alpha, beta, adjustedDepth, false);
 
-            std::stable_sort(RootMoves.begin(), RootMoves.end());
-
+            // Only re-order the root list when the iteration actually finished: an
+            // aborted one leaves a mix of fresh -INF and stale scores.
             if (Stop) break;
+            std::stable_sort(RootMoves.begin(), RootMoves.end());
 
             if (bestValue <= alpha) {
                 beta = Value((alpha + beta) / 2);
@@ -901,14 +920,13 @@ void think(Position& pos) {
             delta += delta / 3;
         }
 
-        std::stable_sort(RootMoves.begin(), RootMoves.end());
-
         if (!Stop) {
+            std::stable_sort(RootMoves.begin(), RootMoves.end());
             CompletedDepth = RootDepth;
             print_info(pos, RootDepth, bestValue, false, BOUND_EXACT);
 
-            if (RootMoves[0].pv[0] != LastBestMove) {
-                LastBestMove = RootMoves[0].pv[0];
+            if (BestPV[0] != LastBestMove) {
+                LastBestMove = BestPV[0];
                 LastBestMoveDepth = RootDepth;
                 stableCount = 0;
             } else
@@ -943,9 +961,9 @@ void think(Position& pos) {
         (void)prevTimeReduction;
     }
 
-    // Always answer with a legal move
-    Move best = RootMoves.empty() ? MOVE_NONE : RootMoves[0].pv[0];
-    if (best == MOVE_NONE && !RootMoves.empty()) best = RootMoves[0].pv[0];
+    // Always answer with a legal move, and always the one whose PV we last printed.
+    Move best = !BestPV.empty() ? BestPV[0]
+              : (!RootMoves.empty() ? RootMoves[0].pv[0] : MOVE_NONE);
     std::cout << "bestmove " << uci_move(best) << std::endl;
 }
 
