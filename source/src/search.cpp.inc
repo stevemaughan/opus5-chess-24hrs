@@ -460,6 +460,11 @@ Value search(Position& pos, Stack* ss, Value alpha, Value beta, int depth, bool 
     ttValue = ttHit ? value_from_tt(tte->value(), ss->ply, pos.rule50_count()) : VALUE_NONE;
     Move ttMove = rootNode ? RootMoves[0].pv[0] : (ttHit ? tte->move() : MOVE_NONE);
     ttCapture = ttMove && pos.capture_stage(ttMove);
+    // Snapshot what the entry says now. Searching a child can evict this cluster slot,
+    // after which `tte` describes some other position entirely, so nothing inside the
+    // move loop may dereference it.
+    const int   ttDepthSnap = ttHit ? tte->depth() : -100;
+    const Bound ttBoundSnap = ttHit ? tte->bound() : BOUND_NONE;
     if (!excludedMove) ss->ttPv = PvNode || (ttHit && tte->is_pv());
     ss->ttHit = ttHit;
 
@@ -555,7 +560,7 @@ Value search(Position& pos, Stack* ss, Value alpha, Value beta, int depth, bool 
     // ---- Step 8: ProbCut ----
     probCutBeta = beta + 184 - 53 * improving;
     if (!PvNode && depth > 3 && std::abs(beta) < VALUE_MATE_IN_MAX_PLY && pruning_on(P_PROBCUT)
-        && !(ttHit && tte->depth() >= depth - 3 && ttValue != VALUE_NONE && ttValue < probCutBeta)) {
+        && !(ttHit && ttDepthSnap >= depth - 3 && ttValue != VALUE_NONE && ttValue < probCutBeta)) {
 
         MovePicker mp(pos, ttMove, probCutBeta - ss->staticEval, &Hist);
         while ((move = mp.next_move()) != MOVE_NONE) {
@@ -665,7 +670,7 @@ moves_loop:
                 // Singular extension: is the TT move the only good one?
                 if (!rootNode && move == ttMove && !excludedMove && depth >= 6 && pruning_on(P_SINGULAR)
                     && ttValue != VALUE_NONE && std::abs(ttValue) < VALUE_MATE_IN_MAX_PLY
-                    && (tte->bound() & BOUND_LOWER) && tte->depth() >= depth - 3) {
+                    && (ttBoundSnap & BOUND_LOWER) && ttDepthSnap >= depth - 3) {
 
                     Value singularBeta = ttValue - (58 + 58 * (ss->ttPv && !PvNode)) * depth / 64;
                     int singularDepth = (depth - 1) / 2;

@@ -18,3 +18,25 @@ game 1100/2500  played 955  discarded 145  positions 73183
 game 1150/2500  played 997  discarded 153  positions 76177
 game 1200/2500  played 1039  discarded 161  positions 79597
 game 1250/2500  played 1083  discarded 167  positions 82780
+game 1300/2500  played 1127  discarded 173  positions 86250
+game 1350/2500  played 1169  discarded 181  positions 90018
+game 1450/2500  played 1254  discarded 196  positions 97296
+game 1500/2500  played 1296  discarded 204  positions 101081
+game 1550/2500  played 1339  discarded 211  positions 104674
+game 1600/2500  played 1384  discarded 216  positions 107878
+game 1650/2500  played 1423  discarded 227  positions 110963
+game 1700/2500  played 1466  discarded 234  positions 114002
+game 1750/2500  played 1509  discarded 241  positions 117195
+game 1800/2500  played 1551  discarded 249  positions 121260
+game 1900/2500  played 1635  discarded 265  positions 128198
+game 2050/2500  played 1763  discarded 287  positions 138181
+game 2100/2500  played 1807  discarded 293  positions 142007
+game 2150/2500  played 1849  discarded 301  positions 145433
+game 2200/2500  played 1891  discarded 309  positions 149138
+game 2250/2500  played 1935  discarded 315  positions 152412
+game 2300/2500  played 1981  discarded 319  positions 155516
+game 2350/2500  played 2025  discarded 325  positions 158697
+game 2400/2500  played 2068  discarded 332  positions 162247
+game 2450/2500  played 2112  discarded 338  positions 165816
+game 2500/2500  played 2157  discarded 343  positions 169508
+done: 2157 games, 343 discarded, 169508 positions -> data\part2.txt

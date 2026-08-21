@@ -122,3 +122,23 @@ measured elapsed time against `docs/start_time.txt`.
 - Elo estimate: **~2850 (+/- 80)**.
 - Next: finish datagen, run the tuner, then SPRT (a) tuned eval and (b) correction
   history separately.
+
+## Hour 2.0 — 2026-08-21 14:45
+- **Evaluation tuning works, and it is the biggest win so far.**
+  - 21,900 self-play games -> 1.73M labelled quiet positions.
+  - Texel coordinate descent on 253 parameters, 577k samples, K=1.1:
+    error 0.100179 -> 0.094772 (-5.4%).
+  - SPRT vs an otherwise byte-identical build (only `evalparams.h` differs), 10+0.1:
+    **H1 accepted after 266 games, +198 Elo +/- 42 (75.75%).**
+  - The size of the gain says my hand-guessed positional values were genuinely poor,
+    not that the tuner is magic: e.g. the bishop pair endgame bonus moved 46 -> 86.
+  - Applied and deployed to `final/`. Compliance re-checked (40/40), still standalone.
+- Also fixed: the `tte` pointer was dereferenced inside the move loop for the singular
+  extension test, but searching a child can evict that cluster slot, so it could be
+  describing a different position by then. Depth/bound are now snapshotted before
+  the loop.
+- Elo estimate: previous baseline ~2850; +198 self-play Elo does not translate
+  one-for-one against a field, so I will re-measure against the Stash ladder rather
+  than claim a number.
+- Next: tune phase 2 including the piece-square tables (PeSTO's tables were fitted
+  without my extra terms, so they double-count), then re-measure against Stash.

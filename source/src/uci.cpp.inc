@@ -109,7 +109,7 @@ void go(std::istringstream& is) {
         else if (token == "mate")      { is >> limits.mate; sawLimit = true; }
         else if (token == "infinite")  { limits.infinite = true; sawLimit = true; }
         else if (token == "ponder")    { Search::Pondering = true; sawLimit = true; }
-        else if (token == "nodes")     { int64_t n; is >> n; sawLimit = true; }
+        else if (token == "nodes")     { is >> limits.nodes; sawLimit = true; }
         else if (token == "searchmoves") { while (is >> token) {} }
         // anything else is ignored
     }
