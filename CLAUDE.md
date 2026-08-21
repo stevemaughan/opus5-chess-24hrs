@@ -343,9 +343,11 @@ It must cover:
 
 ## Version control (mandatory)
 
-Initialise a git repository in the project root at the start
-(`git init`; add a `.gitignore` for build artefacts, PGN outputs and large
-temp files; do not commit `resources/`). Commit every time you reach a working,
+A git repository is already initialised in the project root, with a
+`.gitignore` that excludes `resources/`, build artefacts, PGN outputs and
+large temp files (the deliverable `final/Opus5chess24hrs.exe` *is* tracked, so
+every commit records what was in `final/`). Extend `.gitignore` if you need
+to. Commit every time you reach a working,
 tested state, with a message that says what changed and (if measured) its
 effect. This gives you a way back when a change turns out to be a regression
 or introduces a bug. Commit `docs/progress.md` with each hourly update.

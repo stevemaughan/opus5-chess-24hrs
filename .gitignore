@@ -32,3 +32,6 @@ source/tests/*.pgn
 .idea/
 Thumbs.db
 .DS_Store
+
+# The deliverable itself IS tracked (audit trail of what was in final/ over time)
+!final/Opus5chess24hrs.exe
