@@ -41,6 +41,24 @@ int  LastBestMoveDepth;
 Value LastBestScore;
 Position* RootPos = nullptr;
 
+// Search constants that are worth A/B testing.  Defaults reproduce the current
+// behaviour exactly, so a plain build is unaffected.
+#ifndef TM_DIV
+#define TM_DIV 28
+#endif
+#ifndef TM_DIV_OPENING
+#define TM_DIV_OPENING 34
+#endif
+#ifndef LMR_CUTNODE
+#define LMR_CUTNODE 2048
+#endif
+#ifndef QS_MOVECOUNT
+#define QS_MOVECOUNT 2
+#endif
+#ifndef ASP_DELTA
+#define ASP_DELTA 10
+#endif
+
 // Bitmask used to disable individual pruning features while bisecting search behaviour.
 // Set the PRUNEMASK environment variable to a decimal value; every bit set means "on".
 enum PruneBit {
@@ -197,7 +215,7 @@ void init_time(Color us, int gamePly) {
         if (mtg == 1) opt = remaining * 70 / 100;
     } else {
         // Slightly quicker in the opening, where positions are cheap and book-like.
-        int div = (gamePly < 12) ? 34 : 28;
+        int div = (gamePly < 12) ? TM_DIV_OPENING : TM_DIV;
         opt = remaining / div + inc * 85 / 100;
     }
 
@@ -352,7 +370,7 @@ Value qsearch(Position& pos, Stack* ss, Value alpha, Value beta, int depth) {
         if (bestValue > VALUE_MATED_IN_MAX_PLY && pos.non_pawn_material(pos.side_to_move())) {
             if (!givesCheck && to_sq(move) != to_sq((ss - 1)->currentMove)
                 && futilityBase > -VALUE_INFINITE && type_of_move(move) != PROMOTION) {
-                if (pruning_on(P_QCAP) && moveCount > 2) continue;
+                if (pruning_on(P_QCAP) && moveCount > QS_MOVECOUNT) continue;
 
                 Value futilityValue = futilityBase + SEEValue[type_of(pos.piece_on(to_sq(move)))];
                 if (futilityValue <= alpha) { bestValue = std::max(bestValue, futilityValue); continue; }
@@ -705,7 +723,7 @@ moves_loop:
 
             // ---- Step 13: late move reduction ----
             if (ss->ttPv) r -= 1024;
-            if (cutNode) r += 2048;
+            if (cutNode) r += LMR_CUTNODE;
             if (ttCapture && !capture) r += 1024;
             if (PvNode) r -= 1024;
             if (!improving) r += 1024;
@@ -936,7 +954,7 @@ void think(Position& pos) {
 
         // ---- Aspiration window ----
         Value prev = RootMoves[0].averageScore;
-        delta = Value(10 + std::abs(prev) / 12000);
+        delta = Value(ASP_DELTA + std::abs(prev) / 12000);
         alpha = RootDepth >= 4 ? std::max(prev - delta, -VALUE_INFINITE) : -VALUE_INFINITE;
         beta  = RootDepth >= 4 ? std::min(prev + delta, VALUE_INFINITE) : VALUE_INFINITE;
 
