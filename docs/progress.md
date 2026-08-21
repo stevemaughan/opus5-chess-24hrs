@@ -178,3 +178,19 @@ measured elapsed time against `docs/start_time.txt`.
 - `final/` now holds the iteration-2 build (perft 630/630, compliance 40/40,
   KERNEL32+msvcrt only).
 - Next: SPRT correction history (running), then the search parameters.
+
+## Hour 8.0 — 2026-08-21 20:45
+- **Correction history: +53 Elo +/- 20 over 498 games** (SPRT [0,6], LLR 1.89, 2.7 SD).
+  Stopped early - it was already in `final/` and the answer was not in doubt; the CPU
+  is better spent on the next test. A learned per-pawn-structure adjustment to the
+  static evaluation turns out to be worth a lot here, which fits: even a tuned
+  hand-crafted evaluation has systematic biases that a running error estimate can
+  cancel.
+- Pre-built four search variants for A/B testing (time-management divisors, LMR
+  cut-node reduction, quiescence width). Defaults were verified behaviour-identical
+  to the deployed build before any variant was built.
+- Elo estimate: not re-measured against the field since hour 0.8; the self-play gains
+  since then total roughly +330 (+198, +30, +47, +53) which does not translate
+  one-for-one. A fresh gauntlet against the Stash ladder is scheduled before the
+  final build.
+- Next: search parameter A/Bs, then a third tuning iteration, then re-measure.
