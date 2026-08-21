@@ -44,3 +44,24 @@ static linking is trivial with `-static`.
 - Verified toolchain (GCC 15.2.0, Zig 0.16.0), 12 physical cores, resources present.
 - Elo estimate: not yet measurable.
 - Next hour: bitboard/attack infrastructure and move generation.
+
+## Hour 2 — 2026-08-21 14:45
+- Written and working: bitboards + PEXT sliders, full movegen, position/make-unmake,
+  Zobrist, tapered HCE eval (PeSTO + mobility/pawns/passers/king safety/threats),
+  TT, staged MovePicker with history/killers/counter-moves, PVS search with the usual
+  pruning suite, UCI layer with a separate search thread.
+- **Perft: 756/756 checks pass over all 126 positions, depths 1-6, 12.8 billion nodes.**
+- Wrote an exhaustive `pseudo_legal()` verifier (all 65536 move encodings x 126
+  positions). It found a real bug: non-promotion moves with the promotion bits set were
+  accepted, so a TT key collision could inject an aliased move into the search. Fixed;
+  now 0 false positives / 0 false negatives.
+- fastchess `--compliance`: **all 40 checks passed**. Binary is standalone
+  (KERNEL32.dll + msvcrt.dll only). First build deployed to `final/`.
+- Calibration finding: at depth 13 from startpos I use 37.7k nodes vs Stash 30's 298k
+  and Stash 13's 13M. With all pruning disabled I use 743k at depth 10 vs 8.9k with it
+  on - an 83x reduction. The search structure is sound; the pruning is collectively far
+  too aggressive. Added a `PRUNEMASK` env var to toggle each feature for bisection.
+  No single feature dominates, so this needs to be settled by match results, not node
+  counts.
+- Elo estimate: not yet measured. Gauntlet vs Stash 17/20/21 starting now.
+- Next hour: baseline strength measurement, then A/B the pruning aggressiveness.

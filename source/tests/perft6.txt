@@ -1,0 +1,1 @@
+perft suite: 756 checks, 0 failures, 12814553817 nodes in 62048 ms (206526000 nps)
