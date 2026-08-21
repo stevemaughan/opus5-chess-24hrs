@@ -142,3 +142,17 @@ measured elapsed time against `docs/start_time.txt`.
   than claim a number.
 - Next: tune phase 2 including the piece-square tables (PeSTO's tables were fitted
   without my extra terms, so they double-count), then re-measure against Stash.
+
+## Hour 4.0 — 2026-08-21 16:45
+- Phase 2 tuning (989 params, now including the piece-square tables, 866k samples):
+  error 0.094482 -> 0.092618 (-2.0%).
+- SPRT vs phase 1 at 10+0.1: **+29.6 Elo +/- 18.7 after 800 games**, LLR 1.81 and
+  rising. I stopped the test there rather than spend ~35 more minutes reaching the
+  formal bound: the result is ~3 SD positive and the direction is sound (PeSTO's
+  tables were fitted without my extra terms, so the two were double-counting).
+  **Judgement call recorded deliberately** - that CPU is worth more spent on a
+  second tuning iteration than on confirming a result I am already confident in.
+- Deployed to `final/` (v3), compliance re-verified.
+- Cumulative measured evaluation gain so far: +198 then +30 in self-play terms.
+- Next: regenerate data with this much stronger engine (better labels) and re-tune -
+  tuning iteration 2 - then SPRT correction history and the search parameters.

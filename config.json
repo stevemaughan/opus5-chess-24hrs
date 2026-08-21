@@ -32,7 +32,7 @@
         "additional_lines_rgx": [],
         "event_name": "Fastchess Tournament",
         "site": "?",
-        "file": "source\\tests\\sprt_tuned.pgn",
+        "file": "source\\tests\\sprt_psqt.pgn",
         "notation": 0,
         "append_file": true,
         "track_nodes": false,
@@ -60,7 +60,7 @@
     },
     "config_name": "config.json",
     "output": 0,
-    "seed": 1470421484919742126,
+    "seed": 17687404019031793988,
     "variant": 0,
     "type": 0,
     "gauntlet_seeds": 1,
@@ -89,9 +89,9 @@
     },
     "engines": [
         {
-            "name": "tuned",
+            "name": "psqt",
             "dir": "",
-            "cmd": "source\\build\\cand.exe",
+            "cmd": "source\\build\\cand2.exe",
             "args": "",
             "restart": false,
             "options": [
@@ -114,9 +114,9 @@
             "variant": 0
         },
         {
-            "name": "base",
+            "name": "p1",
             "dir": "",
-            "cmd": "source\\build\\ctrl.exe",
+            "cmd": "source\\build\\v2.exe",
             "args": "",
             "restart": false,
             "options": [
@@ -140,16 +140,16 @@
         }
     ],
     "stats": {
-        "tuned vs base": {
-            "wins": 182,
-            "losses": 45,
-            "draws": 39,
-            "penta_WW": 60,
-            "penta_WD": 29,
-            "penta_WL": 33,
-            "penta_DD": 1,
-            "penta_LD": 8,
-            "penta_LL": 2
+        "psqt vs p1": {
+            "wins": 334,
+            "losses": 252,
+            "draws": 292,
+            "penta_WW": 62,
+            "penta_WD": 97,
+            "penta_WL": 113,
+            "penta_DD": 59,
+            "penta_LD": 77,
+            "penta_LL": 31
         }
     }
 }
