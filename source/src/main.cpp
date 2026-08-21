@@ -4,6 +4,7 @@
 #include "eval.cpp.inc"
 #include "tt.cpp.inc"
 #include "search.cpp.inc"
+#include "datagen.cpp.inc"
 #include "uci.cpp.inc"
 
 #include <iostream>

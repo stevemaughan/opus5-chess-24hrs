@@ -45,6 +45,7 @@ struct LimitsType {
     int     depth = 0;
     int64_t movetime = 0;
     int     mate = 0;
+    uint64_t nodes = 0;
     bool    infinite = false;
     bool    useTimeManagement() const { return time[WHITE] || time[BLACK]; }
 };
@@ -58,6 +59,7 @@ struct OptionsType {
 extern OptionsType Options;
 extern LimitsType Limits;
 extern std::atomic<bool> Stop;
+extern bool Quiet;            // suppress all UCI output (used by datagen/tuning)
 extern std::atomic<bool> Pondering;
 extern uint64_t Nodes;
 extern std::vector<RootMove> RootMoves;
@@ -65,6 +67,7 @@ extern std::vector<RootMove> RootMoves;
 void init();
 void clear();
 void think(Position& pos);        // runs in the search thread
+Value search_quiet(Position& pos, const LimitsType& lim, Move& bestMove);
 int64_t now();
 
 } // namespace Search

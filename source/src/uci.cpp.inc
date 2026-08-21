@@ -219,6 +219,16 @@ void loop(int argc, char** argv) {
             go(is);
         } else if (token == "ponderhit") {
             Search::Pondering = false;
+        } else if (token == "datagen") {
+            // datagen <games> <nodesPerMove> <outfile> <seed>
+            int games = 1000; uint64_t nodes = 5000, seed = 1;
+            std::string outFile = "data.txt";
+            if (is >> token) games = std::atoi(token.c_str());
+            if (is >> token) nodes = std::strtoull(token.c_str(), nullptr, 10);
+            if (is >> token) outFile = token;
+            if (is >> token) seed = std::strtoull(token.c_str(), nullptr, 10);
+            wait_for_search();
+            DataGen::run(games, nodes, outFile, seed);
         } else if (token == "bench") {
             bench(is);
         } else if (token == "perft") {

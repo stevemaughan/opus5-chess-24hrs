@@ -120,7 +120,7 @@ static Score evaluate_pawns_for(const Position& pos, PawnEntry& e) {
 
         if (support | phalanx) {
             int v = mg_value(ConnectedRank[r]) * (2 + (phalanx ? 1 : 0) - (opposed ? 1 : 0))
-                  + 11 * popcount(support);
+                  + ConnectedSupport * popcount(support);
             score += make_score(v / 2, v * (r - 2) / 8);
         } else if (!neighbours) {
             score += Isolated;
@@ -184,6 +184,18 @@ static int king_safety_value(const Position& pos) {
 }
 
 static PawnEntry* probe_pawns(const Position& pos) {
+#ifdef TUNE
+    // The tuner changes evaluation parameters between passes and runs the error
+    // function on several threads, so the shared cache would be both stale and
+    // racy. Recompute into thread-local storage instead.
+    static thread_local PawnEntry tls;
+    PawnEntry* e = &tls;
+    e->key = pos.pawn_key();
+    e->score = evaluate_pawns_for<WHITE>(pos, *e) - evaluate_pawns_for<BLACK>(pos, *e);
+    e->kingSafety[WHITE] = king_safety_value<WHITE>(pos);
+    e->kingSafety[BLACK] = king_safety_value<BLACK>(pos);
+    return e;
+#else
     U64 key = pos.pawn_key();
     PawnEntry* e = &PawnTable[key & (PawnTableSize - 1)];
 
@@ -206,6 +218,7 @@ static PawnEntry* probe_pawns(const Position& pos) {
         }
     }
     return e;
+#endif
 }
 
 // ---------------------------------------------------------------------------
@@ -365,7 +378,7 @@ Score Evaluation::pieces() {
                 Bitboard btw = between_bb(s, sn) & occAll;
                 if (btw && !more_than_one(btw)) pinners |= square_bb(sn);
             }
-            if (pinners) score += S(-40, -8);
+            if (pinners) score += QueenPinned;
         }
         (void)Down;
     }
@@ -400,25 +413,25 @@ Score Evaluation::king() const {
     Bitboard bishopChecks = b2 & attackedBy[Them][BISHOP] & safe & ~queenChecks;
     Bitboard knightChecks = BB::PseudoAttacks[KNIGHT][ksq] & attackedBy[Them][KNIGHT] & safe;
 
-    int kingDanger = kingAttackersCount[Them] * kingAttackersWeight[Them] / 8
-                   + 12 * kingAttacksCount[Them]
-                   + 22 * popcount(kingRing[Us] & weak)
-                   + 78 * popcount(rookChecks)
-                   + 82 * popcount(queenChecks)
-                   + 52 * popcount(bishopChecks)
-                   + 62 * popcount(knightChecks)
-                   - 380 * (pos.count(Them, QUEEN) == 0)
-                   - 4 * shelter
+    int kingDanger = kingAttackersCount[Them] * kingAttackersWeight[Them] / std::max(1, KSAttackerScale)
+                   + KSAttacksWeight * kingAttacksCount[Them]
+                   + KSWeakSquares * popcount(kingRing[Us] & weak)
+                   + KSRookCheck * popcount(rookChecks)
+                   + KSQueenCheck * popcount(queenChecks)
+                   + KSBishopCheck * popcount(bishopChecks)
+                   + KSKnightCheck * popcount(knightChecks)
+                   - KSNoQueen * (pos.count(Them, QUEEN) == 0)
+                   - KSShelterScale * shelter
                    - 6;
 
     if (kingDanger > 0) {
         // Quadratic in the middlegame, linear in the endgame
-        score -= make_score(kingDanger * kingDanger / 3600, kingDanger / 14);
+        score -= make_score(kingDanger * kingDanger / std::max(1, KSQuadDiv), kingDanger / std::max(1, KSLinearDiv));
     }
 
     // Penalty for a king on a flank with no pawns at all
     Bitboard flank = KingFlankBB[file_of(ksq)];
-    if (!(pos.pieces(PAWN) & flank)) score += S(-14, -4);
+    if (!(pos.pieces(PAWN) & flank)) score += KingFlankNoPawns;
 
     return score;
 }

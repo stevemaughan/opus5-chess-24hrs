@@ -11,6 +11,7 @@ OptionsType Options;
 LimitsType  Limits;
 std::atomic<bool> Stop{false};
 std::atomic<bool> Pondering{false};
+bool Quiet = false;
 uint64_t Nodes = 0;
 std::vector<RootMove> RootMoves;
 
@@ -21,6 +22,7 @@ enum NodeType { NonPV, PV, Root };
 Histories Hist;
 
 // Timing
+uint64_t NextTimeCheck = 0;
 int64_t StartTime;
 int64_t OptimumTime;
 int64_t MaximumTime;
@@ -203,6 +205,7 @@ inline int64_t elapsed() { return now() - StartTime; }
 
 // Called from inside the search every so often
 void check_time() {
+    if (Limits.nodes && Nodes >= Limits.nodes) { Stop = true; return; }
     if (!UseTimeMan || Limits.infinite) return;
     if (elapsed() >= MaximumTime) Stop = true;
 }
@@ -240,7 +243,7 @@ void print_info(const Position& pos, int depth, Value score, bool bounded, Bound
         if (m == MOVE_NONE) break;
         ss << ' ' << uci_move(m);
     }
-    std::cout << ss.str() << std::endl;
+    if (!Quiet) std::cout << ss.str() << std::endl;
     (void)pos;
 }
 
@@ -413,7 +416,10 @@ Value search(Position& pos, Stack* ss, Value alpha, Value beta, int depth, bool 
 
     if (!rootNode) {
         // Periodic clock check
-        if ((Nodes & 1023) == 0) check_time();
+        // A counter, not a bitmask on Nodes: qsearch also increments Nodes, so an
+        // exact "(Nodes & 1023) == 0" test can be stepped over entirely and let the
+        // search blow past the hard time limit.
+        if (Nodes >= NextTimeCheck) { NextTimeCheck = Nodes + 1024; check_time(); }
         if (Stop.load(std::memory_order_relaxed)) return VALUE_ZERO;
 
         // ---- Step 2: draws and mate-distance pruning ----
@@ -833,6 +839,7 @@ void clear() {
 void think(Position& pos) {
     StartTime = now();
     Nodes = 0;
+    NextTimeCheck = 1024;
     BestMoveChanges = 0;
     CompletedDepth = 0;
     LastBestMove = MOVE_NONE;
@@ -849,8 +856,12 @@ void think(Position& pos) {
     for (const ExtMove& m : MoveList<LEGAL>(pos)) RootMoves.emplace_back(m.move);
 
     if (RootMoves.empty()) {
-        std::cout << "info depth 0 score " << (pos.checkers() ? "mate 0" : "cp 0") << std::endl;
-        std::cout << "bestmove 0000" << std::endl;
+        if (!Quiet) {
+            std::cout << "info depth 0 score " << (pos.checkers() ? "mate 0" : "cp 0") << std::endl;
+            std::cout << "bestmove 0000" << std::endl;
+        }
+        BestPV.clear();
+        BestScore = pos.checkers() ? -VALUE_MATE : VALUE_DRAW;
         return;
     }
 
@@ -964,7 +975,18 @@ void think(Position& pos) {
     // Always answer with a legal move, and always the one whose PV we last printed.
     Move best = !BestPV.empty() ? BestPV[0]
               : (!RootMoves.empty() ? RootMoves[0].pv[0] : MOVE_NONE);
-    std::cout << "bestmove " << uci_move(best) << std::endl;
+    if (!Quiet) std::cout << "bestmove " << uci_move(best) << std::endl;
+}
+
+// Run a search with no UCI output; returns the score and sets bestMove.
+Value search_quiet(Position& pos, const LimitsType& lim, Move& bestMove) {
+    Limits = lim;
+    Stop = false;
+    Quiet = true;
+    think(pos);
+    Quiet = false;
+    bestMove = BestPV.empty() ? MOVE_NONE : BestPV[0];
+    return BestScore;
 }
 
 } // namespace Search

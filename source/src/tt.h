@@ -4,10 +4,14 @@
 
 enum Bound : int { BOUND_NONE = 0, BOUND_UPPER = 1, BOUND_LOWER = 2, BOUND_EXACT = 3 };
 
+// Quiescence stores entries at depth 0 and -1, and the static-eval-only store uses -6,
+// so the encoded depth needs room below zero.  depth8 == 0 is reserved for "empty".
+constexpr int TT_DEPTH_OFFSET = 8;
+
 // 10 bytes per entry; three entries plus two padding bytes fill one 32-byte cluster.
 struct TTEntry {
     uint16_t key16;
-    uint8_t  depth8;      // depth + 1 (so that 0 means "empty")
+    uint8_t  depth8;      // depth + TT_DEPTH_OFFSET, clamped to [1,255]; 0 means "empty"
     uint8_t  genBound8;   // generation (upper 5 bits) | pv (bit 2) | bound (low 2 bits)
     Move     move16;
     int16_t  value16;
@@ -16,7 +20,7 @@ struct TTEntry {
     Move  move() const { return move16; }
     Value value() const { return Value(value16); }
     Value eval() const { return Value(eval16); }
-    int   depth() const { return int(depth8) - 1; }
+    int   depth() const { return int(depth8) - TT_DEPTH_OFFSET; }
     bool  is_pv() const { return bool(genBound8 & 0x4); }
     Bound bound() const { return Bound(genBound8 & 0x3); }
     bool  occupied() const { return depth8 != 0; }
@@ -64,9 +68,9 @@ inline void TTEntry::save(U64 k, Value v, bool pv, Bound b, int d, Move m, Value
     if (m || uint16_t(k) != key16) move16 = m;
 
     // Overwrite unless the stored entry is a deeper, same-position, exact-ish result
-    if (b == BOUND_EXACT || uint16_t(k) != key16 || d + 5 + 2 * pv > int(depth8) - 1) {
+    if (b == BOUND_EXACT || uint16_t(k) != key16 || d + 5 + 2 * pv > depth()) {
         key16 = uint16_t(k);
-        depth8 = uint8_t(std::clamp(d + 1, 0, 255));
+        depth8 = uint8_t(std::clamp(d + TT_DEPTH_OFFSET, 1, 255));
         genBound8 = uint8_t(gen | (unsigned(pv) << 2) | b);
         value16 = int16_t(v);
         eval16 = int16_t(ev);
