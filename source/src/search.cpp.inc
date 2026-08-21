@@ -78,6 +78,20 @@ inline Value value_from_tt(Value v, int ply, int r50) {
     return v;
 }
 
+// Apply the learned correction for this pawn structure to a raw static evaluation.
+// The transposition table always stores the *raw* value; the correction is applied
+// on read, so a stale correction can never be baked into the table.
+inline Value corrected_eval(const Position& pos, Value raw) {
+#ifdef NO_CORRHIST
+    (void)pos;
+    return raw;
+#else
+    int cv = corr_value(Hist.corr[pos.side_to_move()][corr_hist_index(pos.pawn_key())]);
+    return Value(std::clamp(int(raw) + cv / 2,
+                            int(VALUE_MATED_IN_MAX_PLY) + 1, int(VALUE_MATE_IN_MAX_PLY) - 1));
+#endif
+}
+
 inline int stat_bonus(int d) { return std::min(268 * d - 352, 1153); }
 inline int stat_malus(int d) { return std::min(400 * d - 354, 1201); }
 
@@ -294,22 +308,25 @@ Value qsearch(Position& pos, Stack* ss, Value alpha, Value beta, int depth) {
         return ttValue;
 
     // Static evaluation / stand pat
+    Value rawEval = VALUE_NONE;
     if (ss->inCheck) {
         ss->staticEval = VALUE_NONE;
         bestValue = futilityBase = -VALUE_INFINITE;
     } else {
         if (ttHit) {
-            ss->staticEval = bestValue = (tte->eval() != VALUE_NONE) ? tte->eval() : Eval::evaluate(pos);
+            rawEval = (tte->eval() != VALUE_NONE) ? tte->eval() : Eval::evaluate(pos);
+            ss->staticEval = bestValue = corrected_eval(pos, rawEval);
             if (ttValue != VALUE_NONE && (tte->bound() & (ttValue > bestValue ? BOUND_LOWER : BOUND_UPPER)))
                 bestValue = ttValue;
         } else {
-            ss->staticEval = bestValue = Eval::evaluate(pos);
+            rawEval = Eval::evaluate(pos);
+            ss->staticEval = bestValue = corrected_eval(pos, rawEval);
         }
 
         if (bestValue >= beta) {
             if (!ttHit)
                 tte->save(posKey, value_to_tt(bestValue, ss->ply), false, BOUND_LOWER,
-                          -6, MOVE_NONE, ss->staticEval, TT.generation());
+                          -6, MOVE_NONE, rawEval, TT.generation());
             return bestValue;
         }
         if (bestValue > alpha) alpha = bestValue;
@@ -377,7 +394,7 @@ Value qsearch(Position& pos, Stack* ss, Value alpha, Value beta, int depth) {
 
     tte->save(posKey, value_to_tt(bestValue, ss->ply), pvHit,
               bestValue >= beta ? BOUND_LOWER : (PvNode && bestValue > oldAlpha) ? BOUND_EXACT : BOUND_UPPER,
-              ttDepth, bestMove, ss->staticEval, TT.generation());
+              ttDepth, bestMove, rawEval, TT.generation());
     return bestValue;
 }
 
@@ -474,13 +491,13 @@ Value search(Position& pos, Stack* ss, Value alpha, Value beta, int depth, bool 
         eval = ss->staticEval;
     } else if (ttHit) {
         unadjustedEval = (tte->eval() != VALUE_NONE) ? tte->eval() : Eval::evaluate(pos);
-        ss->staticEval = eval = unadjustedEval;
+        ss->staticEval = eval = corrected_eval(pos, unadjustedEval);
         // Use the TT value as a better estimate of the true score when the bound allows
         if (ttValue != VALUE_NONE && (tte->bound() & (ttValue > eval ? BOUND_LOWER : BOUND_UPPER)))
             eval = ttValue;
     } else {
         unadjustedEval = Eval::evaluate(pos);
-        ss->staticEval = eval = unadjustedEval;
+        ss->staticEval = eval = corrected_eval(pos, unadjustedEval);
         tte->save(posKey, VALUE_NONE, ss->ttPv, BOUND_NONE, -6, MOVE_NONE, unadjustedEval, TT.generation());
     }
 
@@ -801,6 +818,18 @@ moves_loop:
         if (prevPc != NO_PIECE)
             update_continuation_histories(ss - 1, prevPc, to_sq((ss - 1)->currentMove), stat_bonus(depth));
     }
+
+    // Feed the search result back into the correction history, but only when the
+    // static evaluation was actually meaningful for this node: not in check, the
+    // best move was not a capture, and the bound points the same way as the error.
+#ifndef NO_CORRHIST
+    if (!ss->inCheck && ss->staticEval != VALUE_NONE
+        && !(bestMove && pos.capture_stage(bestMove))
+        && ((bestValue < ss->staticEval && bestValue < beta)
+            || (bestValue > ss->staticEval && bestMove)))
+        corr_update(Hist.corr[us][corr_hist_index(pos.pawn_key())],
+                    int(bestValue) - int(ss->staticEval), depth);
+#endif
 
     if (!excludedMove)
         tte->save(posKey, value_to_tt(bestValue, ss->ply), ss->ttPv,

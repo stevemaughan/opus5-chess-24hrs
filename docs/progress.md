@@ -92,3 +92,33 @@ measured elapsed time against `docs/start_time.txt`.
 - Elo estimate: **~2870 (+/- ~70)**.
 - Next: finish the gauntlet, deploy the PV fix, then bracket the top end against
   stash-25 (~2940) and stash-30 (~3170).
+
+## Hour 1.1 — 2026-08-21 13:50
+- Final gauntlet result (240 games, 80 per opponent, 10+0.1, Hash 256):
+  stash-21 21.9% / stash-20 13.1% / stash-17 6.2% against me.
+  **Zero timeouts, zero crashes, zero illegal moves on my side** over 240 games
+  (the single timeout in the log was stash-20's). Implied strength ~2850 +/- 80;
+  the per-opponent estimates (2770 / 2840 / 2930) spread in the usual way when the
+  rating gap is large.
+- **TT bug found and fixed:** depth was encoded as `clamp(d+1, 0, 255)` with 0
+  meaning "empty". Quiescence stores at depth 0/-1 and the static-eval-only store
+  uses -6, so every one of those entries was written with `depth8 == 0` and then
+  read back as unoccupied — the quiescence transposition table had never worked at
+  all. Re-encoded with an offset of 8. Bench at fixed depth 12: 546k -> 499k nodes.
+- Hardened the periodic clock check: it keyed off `(Nodes & 1023) == 0`, which
+  qsearch can step straight over, so the hard time limit could be missed. Now a
+  counter.
+- Built the tuning pipeline: `datagen` (self-play, node-limited, writes quiet
+  positions labelled with the game result) and a texel-style coordinate-descent
+  tuner. All 253 eval parameters moved into `src/evalparams.h`; they are
+  `constexpr` in the release build and mutable only under `-DTUNE`, so tuning
+  costs the shipped engine nothing. Verified the round trip: the tuner regenerates
+  `evalparams.h` and the engine rebuilt from it benches to the identical node count.
+- Implemented correction history (learned per-pawn-structure static-eval
+  adjustment), behind `-DNO_CORRHIST` so it can be A/B tested in isolation.
+  Untested as yet.
+- Data generation running: 25000 self-play games across 10 processes, ~1.9M quiet
+  positions expected.
+- Elo estimate: **~2850 (+/- 80)**.
+- Next: finish datagen, run the tuner, then SPRT (a) tuned eval and (b) correction
+  history separately.

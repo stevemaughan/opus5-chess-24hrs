@@ -260,10 +260,28 @@ static void dump_int_array(std::ostream& o, const char* name, const int* a, int 
     o << "\n};\n";
 }
 
+// Writes a complete, drop-in replacement for src/evalparams.h.
 static void dump(const std::string& path, bool includePSQT) {
+    (void)includePSQT;   // the file must always be complete, tuned or not
     using namespace Eval;
     std::ofstream o(path);
-    o << "// Tuned by source/src/tuner_main.cpp on self-play data. Paste into eval.h.\n\n";
+
+    o << "#pragma once\n#include \"types.h\"\n\n"
+      << "// ---------------------------------------------------------------------------\n"
+      << "// Every tunable evaluation parameter lives here and nowhere else, so the tuner\n"
+      << "// can regenerate this whole file and applying a tuning run is a file copy.\n"
+      << "//\n"
+      << "// The material values and piece-square tables started as PeSTO's (published on\n"
+      << "// the Chess Programming Wiki, which the benchmark rules explicitly permit);\n"
+      << "// everything else began as my own estimates on the pawn=100 scale. All of it is\n"
+      << "// then fitted to self-play results by source/src/tuner_main.cpp.\n"
+      << "// ---------------------------------------------------------------------------\n\n"
+      << "// constexpr in the release build, mutable only in the tuner build, so tuning\n"
+      << "// costs the shipped engine nothing.\n"
+      << "#ifdef TUNE\n  #define EVP_SCORE inline Score\n  #define EVP_INT   inline int\n"
+      << "#else\n  #define EVP_SCORE constexpr Score\n  #define EVP_INT   constexpr int\n#endif\n\n"
+      << "#define S(mg, eg) make_score(mg, eg)\n\n"
+      << "namespace Eval {\n\n";
 
     o << "EVP_SCORE PieceScore[PIECE_TYPE_NB] = {\n    S(0,0)";
     for (int pt = PAWN; pt <= QUEEN; ++pt)
@@ -323,7 +341,7 @@ static void dump(const std::string& path, bool includePSQT) {
     o << "EVP_INT ConnectedSupport = " << ConnectedSupport << ";\n";
     dump_int_array(o, "KingAttackWeight", KingAttackWeight, PIECE_TYPE_NB, 7);
 
-    if (includePSQT) {
+    {
         o << "\n";
         dump_int_array(o, "mg_pawn", mg_pawn, 64, 8);
         dump_int_array(o, "eg_pawn", eg_pawn, 64, 8);
@@ -338,6 +356,7 @@ static void dump(const std::string& path, bool includePSQT) {
         dump_int_array(o, "mg_king", mg_king, 64, 8);
         dump_int_array(o, "eg_king", eg_king, 64, 8);
     }
+    o << "\n} // namespace Eval\n\n#undef S\n";
     o.flush();
     std::cout << "wrote " << path << std::endl;
 }
