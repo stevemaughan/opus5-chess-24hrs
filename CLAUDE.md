@@ -13,6 +13,16 @@ first and what to skip. This file deliberately gives you no technical guidance
 on how to build a strong engine. It tells you the rules, the constraints, the
 resources available, and what you must deliver.
 
+**Managing your own time and effort is part of what is being benchmarked.**
+The 24 hours is a fixed budget that covers everything you do — thinking,
+reading, coding, compiling, debugging, testing and writing. How much of that
+budget you spend on each task, when you stop polishing one thing and move on
+to the next, what you measure versus accept on judgement, and what you decide
+not to do at all, are all your decisions — and they will determine the final
+Elo as much as any individual technical choice. Nobody will tell you when to
+move on. Budget deliberately, time-box your work, and re-plan against the
+deadline as you go.
+
 ## You are on your own
 
 This run is **fully autonomous**. Nobody is watching, nobody will answer
@@ -358,4 +368,21 @@ Twenty-four hours is not long enough to test every change with a proper SPRT
 at game speed. You will have to decide, for each idea, whether to measure it,
 to accept it on reasoning, or to skip it. How you allocate your time between
 correctness, speed, search, evaluation, time management and measurement is
-the core of this benchmark. Choose deliberately.
+the core of this benchmark — **allocation of effort is itself being scored,
+through its effect on the final Elo**. Some things to keep in mind:
+
+- Every hour spent on one thing is an hour not spent on another. A change
+  worth 5 Elo that costs three hours to build and test may be worse than
+  three changes worth 3 Elo each that cost an hour apiece.
+- Decide in advance roughly how long a task should take, and notice when you
+  are over budget. Chasing a stubborn bug or squeezing the last few percent
+  of speed can quietly consume hours; know when to stop, simplify, or revert.
+- Long test matches are time you cannot get back. Choose game counts and time
+  controls that answer the question you are actually asking, no more.
+- The first playable engine in `final/` is worth more than any unfinished
+  ambitious one. Get to "plays legal chess, doesn't crash, manages its clock"
+  early, then spend the remaining time on strength.
+- Re-plan backwards from the deadline at every hourly check-in: what is the
+  most valuable thing you can still finish *and verify* before it?
+
+Choose deliberately, and record the reasoning in `docs/progress.md`.
