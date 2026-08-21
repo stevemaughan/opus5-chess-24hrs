@@ -194,3 +194,15 @@ measured elapsed time against `docs/start_time.txt`.
   one-for-one. A fresh gauntlet against the Stash ladder is scheduled before the
   final build.
 - Next: search parameter A/Bs, then a third tuning iteration, then re-measure.
+
+## Hour 9.0 — 2026-08-21 21:45
+- **Time-management A/B, both directions tested, both worse:**
+  - more time per move (divisors 24/30 vs 28/34): **-23 Elo +/- 22** over 300 games
+  - less time per move (divisors 34/40): **-27 Elo +/- 42** over 102 games
+  The current allocation sits at a local optimum, so I am leaving it alone. Recorded
+  as a deliberate null result rather than a missing test.
+- Started data generation iteration 3 from the current `final/` build (which is
+  ~330 self-play Elo stronger than the engine that produced the iteration-1 data),
+  on the reasoning that better labels were what made iteration 2 worth +47.
+- Deferred (will run if time allows after tuning iteration 3): LMR cut-node
+  reduction, quiescence width. Both variants are already built.
