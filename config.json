@@ -32,7 +32,7 @@
         "additional_lines_rgx": [],
         "event_name": "Fastchess Tournament",
         "site": "?",
-        "file": "source\\tests\\sprt_psqt.pgn",
+        "file": "source\\tests\\sprt_iter2.pgn",
         "notation": 0,
         "append_file": true,
         "track_nodes": false,
@@ -60,7 +60,7 @@
     },
     "config_name": "config.json",
     "output": 0,
-    "seed": 17687404019031793988,
+    "seed": 10232595192467639107,
     "variant": 0,
     "type": 0,
     "gauntlet_seeds": 1,
@@ -89,9 +89,9 @@
     },
     "engines": [
         {
-            "name": "psqt",
+            "name": "iter2",
             "dir": "",
-            "cmd": "source\\build\\cand2.exe",
+            "cmd": "source\\build\\cand3.exe",
             "args": "",
             "restart": false,
             "options": [
@@ -114,9 +114,9 @@
             "variant": 0
         },
         {
-            "name": "p1",
+            "name": "iter1",
             "dir": "",
-            "cmd": "source\\build\\v2.exe",
+            "cmd": "source\\build\\v3.exe",
             "args": "",
             "restart": false,
             "options": [
@@ -140,16 +140,16 @@
         }
     ],
     "stats": {
-        "psqt vs p1": {
-            "wins": 334,
-            "losses": 252,
-            "draws": 292,
-            "penta_WW": 62,
-            "penta_WD": 97,
-            "penta_WL": 113,
-            "penta_DD": 59,
-            "penta_LD": 77,
-            "penta_LL": 31
+        "iter2 vs iter1": {
+            "wins": 143,
+            "losses": 103,
+            "draws": 134,
+            "penta_WW": 21,
+            "penta_WD": 44,
+            "penta_WL": 57,
+            "penta_DD": 32,
+            "penta_LD": 26,
+            "penta_LL": 10
         }
     }
 }

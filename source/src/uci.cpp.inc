@@ -99,11 +99,11 @@ void go(std::istringstream& is) {
     bool sawLimit = false;
 
     while (is >> token) {
-        if (token == "wtime")          { is >> limits.time[WHITE]; sawLimit = true; }
-        else if (token == "btime")     { is >> limits.time[BLACK]; sawLimit = true; }
-        else if (token == "winc")      { is >> limits.inc[WHITE]; sawLimit = true; }
-        else if (token == "binc")      { is >> limits.inc[BLACK]; sawLimit = true; }
-        else if (token == "movestogo") { is >> limits.movestogo; sawLimit = true; }
+        if (token == "wtime")          { is >> limits.time[WHITE]; sawLimit = limits.timed = true; }
+        else if (token == "btime")     { is >> limits.time[BLACK]; sawLimit = limits.timed = true; }
+        else if (token == "winc")      { is >> limits.inc[WHITE]; sawLimit = limits.timed = true; }
+        else if (token == "binc")      { is >> limits.inc[BLACK]; sawLimit = limits.timed = true; }
+        else if (token == "movestogo") { is >> limits.movestogo; sawLimit = limits.timed = true; }
         else if (token == "depth")     { is >> limits.depth; sawLimit = true; }
         else if (token == "movetime")  { is >> limits.movetime; sawLimit = true; }
         else if (token == "mate")      { is >> limits.mate; sawLimit = true; }

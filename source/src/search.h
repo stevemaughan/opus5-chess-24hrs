@@ -47,7 +47,11 @@ struct LimitsType {
     int     mate = 0;
     uint64_t nodes = 0;
     bool    infinite = false;
-    bool    useTimeManagement() const { return time[WHITE] || time[BLACK]; }
+    // Set when the go command carried any clock token at all.  Testing the clock
+    // values themselves is wrong: "go wtime 0 btime 0" is a legitimate command and
+    // must produce an instant move, not an unbounded search.
+    bool    timed = false;
+    bool    useTimeManagement() const { return timed; }
 };
 
 // UCI-settable options that the search reads
