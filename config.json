@@ -141,15 +141,15 @@
     ],
     "stats": {
         "iter2 vs iter1": {
-            "wins": 143,
-            "losses": 103,
-            "draws": 134,
-            "penta_WW": 21,
-            "penta_WD": 44,
-            "penta_WL": 57,
-            "penta_DD": 32,
-            "penta_LD": 26,
-            "penta_LL": 10
+            "wins": 308,
+            "losses": 203,
+            "draws": 267,
+            "penta_WW": 51,
+            "penta_WD": 103,
+            "penta_WL": 103,
+            "penta_DD": 53,
+            "penta_LD": 58,
+            "penta_LL": 21
         }
     }
 }

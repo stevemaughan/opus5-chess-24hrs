@@ -156,3 +156,25 @@ measured elapsed time against `docs/start_time.txt`.
 - Cumulative measured evaluation gain so far: +198 then +30 in self-play terms.
 - Next: regenerate data with this much stronger engine (better labels) and re-tune -
   tuning iteration 2 - then SPRT correction history and the search parameters.
+
+## Hour 7.0 — 2026-08-21 19:45
+- **Tuning iteration 2** (fresh data: 25,700 self-play games at 12k nodes/move with
+  the v3 engine -> 2.07M positions; 989 params, 689k samples, K=0.91):
+  error 0.087041 -> 0.085092 (-2.2%).
+  SPRT vs iteration 1: **H1 accepted, +47.2 Elo +/- 18.3 over 778 games.**
+  Regenerating data with the stronger engine was clearly worth it.
+- Cumulative measured evaluation gains, in self-play Elo: +198, +30, +47.
+- **Reliability bug found and fixed:** `go wtime 0 btime 0` searched to MAX_PLY and
+  never returned - `useTimeManagement()` tested the clock *values*, so an all-zero
+  clock switched time management off entirely. Under any harness that is a hang and
+  therefore a lost game. Time management is now driven by whether the `go` command
+  carried a clock token at all. Re-verified: wtime 0/1, bare `movestogo`, and
+  `go infinite` + `stop` all return a legal move promptly.
+- **PGO: tried and measured, no benefit.** 2.62M vs 2.65M nps over three runs each -
+  within noise. Not surprising for a unity build, where GCC already has whole-program
+  visibility. `source/build_final.ps1` does the PGO build and then gates on
+  standalone-ness, perft to depth 5, fastchess compliance and a real 10+0.1 move;
+  the deliverable is only replaced once all of that passes.
+- `final/` now holds the iteration-2 build (perft 630/630, compliance 40/40,
+  KERNEL32+msvcrt only).
+- Next: SPRT correction history (running), then the search parameters.
