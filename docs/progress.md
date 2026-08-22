@@ -507,3 +507,54 @@ The revert is output-only: the search benches to the identical node count (21572
 
 Because the revert changes no search behaviour, these numbers carry over to the
 shipped build.
+
+## 22.4 h elapsed (measured) — FINAL STATE
+
+### Strength of the shipped build
+Three separate runs against stash-30 (~3170 CCRL) at 10+0.1, Hash 256, UHO book,
+all with the shipped evaluation:
+
+| Run | Games | Score |
+|---|---|---|
+| post start-up fix | 260 | 64.4% |
+| final measurement | 298 | 63.3% |
+| ship reliability  | 400 | 65.4% |
+| **pooled** | **958** | **~64.4%** |
+
+64.4% against a ~3170 engine is about **+103 Elo**, i.e. **~3270**. Against stash-25
+(~2940) the shipped build scored 88.3% over 300 games, implying ~3290. And the 65.4%
+figure *includes* the two stall losses described below, so it understates play slightly.
+
+**Final estimate: ~3250, honest range ~3180-3320.** The dominant uncertainty is not
+statistical: the Stash anchors are CCRL ratings measured at 2'+1", and there is no
+guarantee a rating gap at one time control transfers to another. A small,
+fast-evaluating engine plausibly does relatively better at very fast controls, so I
+would treat the lower half of that range as the safer claim.
+
+### One honest loose end: rare stalls under heavy load
+Across roughly 2200 games the engine produced **four "engine not responsive" losses**
+(~0.2%). I found and fixed one real contributor (the doubled 256 MB start-up memset,
+halving start-up to 97 ms) and tested and rejected a second hypothesis (the extra info
+line — reverting it did not remove the stalls, though I kept the revert since it cost
+nothing).
+
+I did not find the remaining cause, and I chose **not** to keep changing the engine to
+chase it in the last two hours. The reasoning, stated plainly: the observed rate costs
+on the order of 1 Elo, it only appeared with twenty engine processes and 5 GB of hash
+competing on one machine, and an untested change to a verified, measured deliverable
+could easily cost more than it saves. Diagnosing it properly needed hours I did not
+have left. It is a genuine known defect and it is recorded as one rather than hidden.
+
+### Deliverable
+`final/Opus5chess24hrs.exe`, SHA-256
+`C262CFCD4BD5DA1A09DE8CB97D23CA6B5C9729568720A987835410B604840C74`
+
+| Check | Result |
+|---|---|
+| `id name` / `id author` | `Opus 5 chess 24hrs` / `Opus 5` |
+| Dependencies | KERNEL32.dll, msvcrt.dll only |
+| perft, 126 positions, depths 1-6 | 756/756, 0 failures, 12,814,553,817 nodes |
+| fastchess `--compliance` | 40/40 |
+| Clock edge cases | all return a legal move |
+| `go infinite` + `stop`, `Hash 1`, `Hash 256` | all correct |
+| Start-up to first move | 98 ms |

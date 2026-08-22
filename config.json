@@ -32,7 +32,7 @@
         "additional_lines_rgx": [],
         "event_name": "Fastchess Tournament",
         "site": "?",
-        "file": "source\\tests\\final_measure.pgn",
+        "file": "source\\tests\\ship_reliability.pgn",
         "notation": 0,
         "append_file": true,
         "track_nodes": false,
@@ -60,16 +60,16 @@
     },
     "config_name": "config.json",
     "output": 0,
-    "seed": 2778852509606426277,
+    "seed": 12497711459761936044,
     "variant": 0,
-    "type": 1,
+    "type": 0,
     "gauntlet_seeds": 1,
     "ratinginterval": 100,
     "scoreinterval": 1,
     "wait": 0,
     "autosaveinterval": 20,
     "games": 2,
-    "rounds": 160,
+    "rounds": 200,
     "concurrency": 10,
     "force_concurrency": false,
     "recover": true,
@@ -137,66 +137,19 @@
                 "plies": 0
             },
             "variant": 0
-        },
-        {
-            "name": "s25",
-            "dir": "",
-            "cmd": "resources\\engines\\stash-25.0-windows-x86_64-bmi2.exe",
-            "args": "",
-            "restart": false,
-            "options": [
-                [
-                    "Hash",
-                    "256"
-                ]
-            ],
-            "limit": {
-                "tc": {
-                    "increment": 100,
-                    "fixed_time": 0,
-                    "time": 10000,
-                    "moves": 0,
-                    "timemargin": 0
-                },
-                "nodes": 0,
-                "plies": 0
-            },
-            "variant": 0
         }
     ],
     "stats": {
-        "s30 vs s25": {
-            "wins": 0,
-            "losses": 0,
-            "draws": 0,
-            "penta_WW": 0,
-            "penta_WD": 0,
-            "penta_WL": 0,
-            "penta_DD": 0,
-            "penta_LD": 0,
-            "penta_LL": 0
-        },
-        "final vs s25": {
-            "wins": 249,
-            "losses": 19,
-            "draws": 32,
-            "penta_WW": 103,
-            "penta_WD": 27,
-            "penta_WL": 16,
-            "penta_DD": 1,
-            "penta_LD": 3,
-            "penta_LL": 0
-        },
         "final vs s30": {
-            "wins": 154,
-            "losses": 75,
-            "draws": 69,
-            "penta_WW": 37,
-            "penta_WD": 39,
-            "penta_WL": 41,
-            "penta_DD": 5,
+            "wins": 215,
+            "losses": 92,
+            "draws": 93,
+            "penta_WW": 48,
+            "penta_WD": 59,
+            "penta_WL": 60,
+            "penta_DD": 7,
             "penta_LD": 20,
-            "penta_LL": 7
+            "penta_LL": 6
         }
     }
 }
