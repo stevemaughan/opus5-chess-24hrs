@@ -32,7 +32,7 @@
         "additional_lines_rgx": [],
         "event_name": "Fastchess Tournament",
         "site": "?",
-        "file": "source\\tests\\soak.pgn",
+        "file": "source\\tests\\sanity_infofix.pgn",
         "notation": 0,
         "append_file": true,
         "track_nodes": false,
@@ -60,7 +60,7 @@
     },
     "config_name": "config.json",
     "output": 0,
-    "seed": 16203544121965791104,
+    "seed": 14443648089342798606,
     "variant": 0,
     "type": 0,
     "gauntlet_seeds": 1,
@@ -69,7 +69,7 @@
     "wait": 0,
     "autosaveinterval": 20,
     "games": 2,
-    "rounds": 300,
+    "rounds": 110,
     "concurrency": 10,
     "force_concurrency": false,
     "recover": true,
@@ -89,9 +89,9 @@
     },
     "engines": [
         {
-            "name": "mine",
+            "name": "infofix",
             "dir": "",
-            "cmd": "final\\Opus5chess24hrs.exe",
+            "cmd": "source\\build\\infofix.exe",
             "args": "",
             "restart": false,
             "options": [
@@ -114,9 +114,9 @@
             "variant": 0
         },
         {
-            "name": "s30",
+            "name": "cur",
             "dir": "",
-            "cmd": "resources\\engines\\stash-30.0-windows-x86_64-bmi2.exe",
+            "cmd": "final\\Opus5chess24hrs.exe",
             "args": "",
             "restart": false,
             "options": [
@@ -140,16 +140,16 @@
         }
     ],
     "stats": {
-        "mine vs s30": {
-            "wins": 277,
-            "losses": 172,
-            "draws": 151,
-            "penta_WW": 55,
-            "penta_WD": 79,
-            "penta_WL": 88,
-            "penta_DD": 18,
-            "penta_LD": 36,
-            "penta_LL": 24
+        "infofix vs cur": {
+            "wins": 56,
+            "losses": 53,
+            "draws": 111,
+            "penta_WW": 3,
+            "penta_WD": 30,
+            "penta_WL": 20,
+            "penta_DD": 26,
+            "penta_LD": 29,
+            "penta_LL": 2
         }
     }
 }

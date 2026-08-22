@@ -391,3 +391,30 @@ output contradicts itself.
 Fixed by reporting immediately when the best root move changes. Verified: search
 behaviour byte-identical (same bench node count at fixed depth), and 0/10 PV/bestmove
 mismatches on timed searches that previously produced them.
+
+## 22.3 h elapsed (measured) — FINAL BUILD INSTALLED AND VERIFIED
+The info-line fix measured statistically identical in play (+4.7 Elo +/- 27.6 over 220
+games, exactly as expected for a search that benches to the identical node count), and
+produced **0 protocol warnings against 2** for the build it replaced. Installed.
+
+Full verification of the shipped `final/Opus5chess24hrs.exe`:
+
+| Check | Result |
+|---|---|
+| `id name` / `id author` | `Opus 5 chess 24hrs` / `Opus 5` |
+| Dependencies | **KERNEL32.dll, msvcrt.dll only** — standalone |
+| perft, 126 positions, depths 1-6 | **756/756 checks, 0 failures, 12,814,553,817 nodes** |
+| fastchess `--compliance` | **passed all 40 checks** |
+| `go wtime 0 btime 0` | legal move, 170 ms |
+| `go wtime 1`, `movetime 1`, `depth 1`, bare `movestogo` | legal move, ~125 ms each |
+| `go infinite` + `stop` | prompt bestmove |
+| 10+0.1 first move | 576 ms, depth 20 |
+| SHA-256 | `6CA9B858A0E4161493B6E93B4858FF80A9B659D34F059A408BBAF733C882B093` |
+
+Build: `g++ -O3 -march=x86-64-v3 -static -std=c++20 -DNDEBUG -fno-math-errno
+-Wl,--stack,16777216`. PGO was built and measured earlier and gave no speedup on this
+unity build, so the simpler non-PGO binary ships.
+
+Remaining time goes to a confirmation match on the shipped binary. No further code
+changes: with eight consecutive null experiments behind me, the expected value of
+another change is far below the risk of disturbing a verified, measured deliverable.
