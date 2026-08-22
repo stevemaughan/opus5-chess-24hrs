@@ -32,7 +32,7 @@
         "additional_lines_rgx": [],
         "event_name": "Fastchess Tournament",
         "site": "?",
-        "file": "source\\tests\\ship_reliability.pgn",
+        "file": "source\\tests\\lowconc.pgn",
         "notation": 0,
         "append_file": true,
         "track_nodes": false,
@@ -60,7 +60,7 @@
     },
     "config_name": "config.json",
     "output": 0,
-    "seed": 12497711459761936044,
+    "seed": 899141526467882799,
     "variant": 0,
     "type": 0,
     "gauntlet_seeds": 1,
@@ -69,8 +69,8 @@
     "wait": 0,
     "autosaveinterval": 20,
     "games": 2,
-    "rounds": 200,
-    "concurrency": 10,
+    "rounds": 150,
+    "concurrency": 4,
     "force_concurrency": false,
     "recover": true,
     "noswap": false,
@@ -141,15 +141,15 @@
     ],
     "stats": {
         "final vs s30": {
-            "wins": 215,
-            "losses": 92,
-            "draws": 93,
-            "penta_WW": 48,
-            "penta_WD": 59,
-            "penta_WL": 60,
-            "penta_DD": 7,
-            "penta_LD": 20,
-            "penta_LL": 6
+            "wins": 26,
+            "losses": 21,
+            "draws": 13,
+            "penta_WW": 6,
+            "penta_WD": 4,
+            "penta_WL": 10,
+            "penta_DD": 2,
+            "penta_LD": 5,
+            "penta_LL": 3
         }
     }
 }

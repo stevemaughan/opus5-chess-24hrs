@@ -558,3 +558,30 @@ have left. It is a genuine known defect and it is recorded as one rather than hi
 | Clock edge cases | all return a legal move |
 | `go infinite` + `stop`, `Hash 1`, `Hash 256` | all correct |
 | Start-up to first move | 98 ms |
+
+## 23.0 h elapsed (measured) — stall investigation, inconclusive, recorded as such
+I spent the last of the budget characterising the intermittent "engine not responsive"
+loss rather than gambling another change on it. What I established:
+
+- It is **not** simply concurrency load: one event appeared in 71 games at concurrency
+  **4**, a higher rate than the 2-in-400 seen at concurrency 10.
+- It is **not** the extra info line: reverting that did not remove it (I kept the
+  revert anyway, since it costs nothing).
+- The doubled 256 MB start-up memset **was** a real contributor and is fixed
+  (start-up 200 ms -> 97 ms), but it was not the whole cause.
+- Events cluster somewhat towards the start of a match (games 5, 5, 174, 261, 412),
+  which points at process start-up rather than at the search.
+- One environmental factor I could not rule out in the time left: this entire working
+  tree lives inside a **Dropbox-synced folder**, with engine binaries being launched
+  hundreds of times and PGN/log files written continuously. A sync scan holding a file
+  briefly would produce exactly this symptom, and would not exist on the rating
+  machine. I started a control run from `%TEMP%` but ran out of clock before it
+  accumulated enough games to be worth anything, so I am claiming nothing from it.
+
+Overall rate across ~2200 games: ~0.2%, costing on the order of 1 Elo. I am recording
+it as a genuine open defect rather than asserting a cause I did not establish.
+
+## FINAL — engine complete
+`final/Opus5chess24hrs.exe` is installed, committed, and verified. No further changes.
+Estimated strength **~3250** (honest range ~3180-3320) from 958 games against
+stash-30 at 10+0.1 plus 300 against stash-25.
