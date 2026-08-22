@@ -413,7 +413,12 @@ Score Evaluation::king() const {
     Bitboard bishopChecks = b2 & attackedBy[Them][BISHOP] & safe & ~queenChecks;
     Bitboard knightChecks = BB::PseudoAttacks[KNIGHT][ksq] & attackedBy[Them][KNIGHT] & safe;
 
-    int kingDanger = kingAttackersCount[Them] * kingAttackersWeight[Them] / std::max(1, KSAttackerScale)
+    // Every tunable here is a multiplier, never a divisor.  An earlier version let the
+    // tuner move the divisors directly; because they sat behind a max(1, x) clamp the
+    // loss surface had a cliff at x <= 1, and the fit duly walked off it (KSLinearDiv
+    // went to -2, i.e. "divide by one", and the shelter term inverted its sign). The
+    // fixed shifts below are powers of two and the shape is monotone in each parameter.
+    int kingDanger = kingAttackersCount[Them] * kingAttackersWeight[Them] / 8
                    + KSAttacksWeight * kingAttacksCount[Them]
                    + KSWeakSquares * popcount(kingRing[Us] & weak)
                    + KSRookCheck * popcount(rookChecks)
@@ -426,7 +431,7 @@ Score Evaluation::king() const {
 
     if (kingDanger > 0) {
         // Quadratic in the middlegame, linear in the endgame
-        score -= make_score(kingDanger * kingDanger / std::max(1, KSQuadDiv), kingDanger / std::max(1, KSLinearDiv));
+        score -= make_score(kingDanger * kingDanger / 4096, kingDanger * KSLinearMul / 256);
     }
 
     // Penalty for a king on a flank with no pawns at all

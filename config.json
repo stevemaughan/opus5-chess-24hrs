@@ -32,7 +32,7 @@
         "additional_lines_rgx": [],
         "event_name": "Fastchess Tournament",
         "site": "?",
-        "file": "source\\tests\\sprt_iter3.pgn",
+        "file": "source\\tests\\sprt_ks.pgn",
         "notation": 0,
         "append_file": true,
         "track_nodes": false,
@@ -60,7 +60,7 @@
     },
     "config_name": "config.json",
     "output": 0,
-    "seed": 994887451449956732,
+    "seed": 839151262676746563,
     "variant": 0,
     "type": 0,
     "gauntlet_seeds": 1,
@@ -89,9 +89,9 @@
     },
     "engines": [
         {
-            "name": "iter3",
+            "name": "ksfix",
             "dir": "",
-            "cmd": "source\\build\\cand4.exe",
+            "cmd": "source\\build\\cand_ks.exe",
             "args": "",
             "restart": false,
             "options": [
@@ -114,7 +114,7 @@
             "variant": 0
         },
         {
-            "name": "iter2",
+            "name": "ksbase",
             "dir": "",
             "cmd": "source\\build\\ch_on.exe",
             "args": "",
@@ -140,16 +140,16 @@
         }
     ],
     "stats": {
-        "iter3 vs iter2": {
-            "wins": 165,
-            "losses": 171,
-            "draws": 202,
-            "penta_WW": 21,
-            "penta_WD": 57,
-            "penta_WL": 66,
-            "penta_DD": 37,
-            "penta_LD": 71,
-            "penta_LL": 17
+        "ksfix vs ksbase": {
+            "wins": 280,
+            "losses": 163,
+            "draws": 277,
+            "penta_WW": 43,
+            "penta_WD": 105,
+            "penta_WL": 89,
+            "penta_DD": 56,
+            "penta_LD": 60,
+            "penta_LL": 7
         }
     }
 }

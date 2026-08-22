@@ -219,3 +219,29 @@ measured elapsed time against `docs/start_time.txt`.
   futility margins, and the late-move-pruning base, each verified
   behaviour-identical at its default.
 - Running: softer LMR cut-node reduction (2048 -> 1536).
+
+## Hour 14.0 — 2026-08-22 02:45
+- **Diagnosed and fixed an overfitting failure in the tuner, worth +55.6 Elo.**
+  Inspecting the tuned parameters showed the king-safety block had gone pathological:
+  `KSLinearDiv = -2` (a *divisor*, sitting behind a `max(1, x)` clamp, so the tuner
+  discovered it could walk off the cliff and effectively divide by one),
+  `KSShelterScale = -4` (sign inverted), and `KingAttackWeight[QUEEN] = -82` — a
+  negative penalty for a queen attacking the king, which is nonsense.
+  Free integers in a denominator give the optimiser a discontinuous surface to
+  exploit, and it duly did.
+  Fixes: every king-safety knob is now a **multiplier**, never a divisor; the two
+  shifts are fixed powers of two; and `KingAttackWeight` is no longer tuned at all
+  (with both the per-piece weights and the multipliers free the fit is
+  under-determined).
+  Re-tuned: error 0.088189 -> 0.085752, which is a *better* fit than the old
+  parameterisation reached (0.085978) despite having six fewer free parameters —
+  confirming the old fit was exploiting the structure rather than modelling king
+  safety. The resulting values are all sane and positive.
+  **SPRT: +55.6 Elo +/- 17.9 over 700 games** (LLR 2.63, 3.1 SD).
+- Deployed. `final/` verified: standalone (KERNEL32 + msvcrt only), perft 630/630,
+  compliance 40/40, correct id name/author, legal move on a 10+0.1 clock.
+- Note: `build_final.ps1`'s last verification step hung when invoked through a nested
+  background pipe; the same check passes instantly when run directly, so it is a
+  harness-plumbing artefact, not an engine problem. Verified the staged binary by
+  hand before copying it into `final/`.
+- Next: fresh gauntlet against the Stash ladder for an honest Elo estimate.

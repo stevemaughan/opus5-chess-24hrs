@@ -207,7 +207,6 @@ static void build_knobs(bool includePSQT) {
     add_score1("PawnPushThreat",   &PawnPushThreat);
 
     add_int("TempoValue",      &TempoValue);
-    add_int("KSAttackerScale", &KSAttackerScale);
     add_int("KSAttacksWeight", &KSAttacksWeight);
     add_int("KSWeakSquares",   &KSWeakSquares);
     add_int("KSRookCheck",     &KSRookCheck);
@@ -216,10 +215,11 @@ static void build_knobs(bool includePSQT) {
     add_int("KSKnightCheck",   &KSKnightCheck);
     add_int("KSNoQueen",       &KSNoQueen);
     add_int("KSShelterScale",  &KSShelterScale);
-    add_int("KSQuadDiv",       &KSQuadDiv);
-    add_int("KSLinearDiv",     &KSLinearDiv);
+    add_int("KSLinearMul",     &KSLinearMul);
     add_int("ConnectedSupport", &ConnectedSupport);
-    add_int_array("KingAttackWeight", KingAttackWeight, 6, 2);
+    // KingAttackWeight is deliberately NOT tuned: with the per-piece weights free as
+    // well as the multipliers the fit is under-determined, and the previous run drove
+    // the queen weight negative - a nonsensical "a queen near the king is safer".
 
     if (includePSQT) {
         // Rank 1 and rank 8 pawn entries are structurally zero; leave them alone.
@@ -327,7 +327,6 @@ static void dump(const std::string& path, bool includePSQT) {
     s1("PawnPushThreat", PawnPushThreat);
 
     o << "\nEVP_INT TempoValue = " << TempoValue << ";\n";
-    o << "EVP_INT KSAttackerScale = " << KSAttackerScale << ";\n";
     o << "EVP_INT KSAttacksWeight = " << KSAttacksWeight << ";\n";
     o << "EVP_INT KSWeakSquares   = " << KSWeakSquares << ";\n";
     o << "EVP_INT KSRookCheck     = " << KSRookCheck << ";\n";
@@ -336,8 +335,7 @@ static void dump(const std::string& path, bool includePSQT) {
     o << "EVP_INT KSKnightCheck   = " << KSKnightCheck << ";\n";
     o << "EVP_INT KSNoQueen       = " << KSNoQueen << ";\n";
     o << "EVP_INT KSShelterScale  = " << KSShelterScale << ";\n";
-    o << "EVP_INT KSQuadDiv       = " << KSQuadDiv << ";\n";
-    o << "EVP_INT KSLinearDiv     = " << KSLinearDiv << ";\n";
+    o << "EVP_INT KSLinearMul     = " << KSLinearMul << ";\n";
     o << "EVP_INT ConnectedSupport = " << ConnectedSupport << ";\n";
     dump_int_array(o, "KingAttackWeight", KingAttackWeight, PIECE_TYPE_NB, 7);
 
