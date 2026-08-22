@@ -585,3 +585,18 @@ it as a genuine open defect rather than asserting a cause I did not establish.
 `final/Opus5chess24hrs.exe` is installed, committed, and verified. No further changes.
 Estimated strength **~3250** (honest range ~3180-3320) from 958 games against
 stash-30 at 10+0.1 plus 300 against stash-25.
+
+## 22.5 h elapsed (measured) — control run finished: suggestive, not conclusive
+The `%TEMP%` control run completed: **200 games, 0 stalls**, scoring 62.75% against
+stash-30 (consistent with every other measurement of this build).
+
+Against ~4 stalls in ~2200 games inside the Dropbox-synced tree — and 1 in 71 in the
+most recent run there — this is **suggestive that the stalls are an artefact of the
+development environment** (Dropbox sync touching engine binaries that are being
+launched hundreds of times), not an engine defect.
+
+But I want to be precise about how strong that evidence is: if the true rate were 1%,
+seeing zero stalls in 200 games would still happen about 13% of the time. So this
+raises my confidence without settling it. The honest summary for the README is: a rare
+stall was observed on the development machine, one real contributing cause was found
+and fixed, the residual is plausibly environmental, and it was not proven either way.
