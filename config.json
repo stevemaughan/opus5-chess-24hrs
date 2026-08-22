@@ -32,7 +32,7 @@
         "additional_lines_rgx": [],
         "event_name": "Fastchess Tournament",
         "site": "?",
-        "file": "source\\tests\\sprt_tmslow.pgn",
+        "file": "source\\tests\\sprt_iter3.pgn",
         "notation": 0,
         "append_file": true,
         "track_nodes": false,
@@ -53,14 +53,14 @@
     "sprt": {
         "alpha": 0.05,
         "beta": 0.05,
-        "elo0": -3.0,
-        "elo1": 5.0,
+        "elo0": 0.0,
+        "elo1": 6.0,
         "model": "normalized",
         "enabled": true
     },
     "config_name": "config.json",
     "output": 0,
-    "seed": 16375187817562038203,
+    "seed": 994887451449956732,
     "variant": 0,
     "type": 0,
     "gauntlet_seeds": 1,
@@ -89,9 +89,9 @@
     },
     "engines": [
         {
-            "name": "tmslow",
+            "name": "iter3",
             "dir": "",
-            "cmd": "source\\build\\tm_slow.exe",
+            "cmd": "source\\build\\cand4.exe",
             "args": "",
             "restart": false,
             "options": [
@@ -114,7 +114,7 @@
             "variant": 0
         },
         {
-            "name": "tmbase",
+            "name": "iter2",
             "dir": "",
             "cmd": "source\\build\\ch_on.exe",
             "args": "",
@@ -140,16 +140,16 @@
         }
     ],
     "stats": {
-        "tmslow vs tmbase": {
-            "wins": 38,
-            "losses": 49,
-            "draws": 91,
-            "penta_WW": 3,
-            "penta_WD": 20,
-            "penta_WL": 12,
-            "penta_DD": 23,
-            "penta_LD": 25,
-            "penta_LL": 6
+        "iter3 vs iter2": {
+            "wins": 165,
+            "losses": 171,
+            "draws": 202,
+            "penta_WW": 21,
+            "penta_WD": 57,
+            "penta_WL": 66,
+            "penta_DD": 37,
+            "penta_LD": 71,
+            "penta_LL": 17
         }
     }
 }

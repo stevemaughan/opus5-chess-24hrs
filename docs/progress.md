@@ -206,3 +206,16 @@ measured elapsed time against `docs/start_time.txt`.
   on the reasoning that better labels were what made iteration 2 worth +47.
 - Deferred (will run if time allows after tuning iteration 3): LMR cut-node
   reduction, quiescence width. Both variants are already built.
+
+## Hour 11.0 — 2026-08-21 23:45
+- **Tuning iteration 3: rejected.** Error 0.087266 -> 0.085978 (-1.5%, vs -2.2% for
+  iteration 2), and the SPRT went **-2.8 Elo +/- 21.7 over 498 games** - the gain had
+  vanished. The tuning pipeline has saturated on this evaluation structure.
+  The three iterations went **+198, +47, ~0**; that is the whole story of texel
+  tuning here, and it is worth recording that I stopped rather than run a fourth.
+  `final/` keeps the iteration-2 parameters.
+- Switched the remaining budget to search parameters, which are still entirely
+  untested. Added -D knobs for singular depth, null-move base reduction, RFP and
+  futility margins, and the late-move-pruning base, each verified
+  behaviour-identical at its default.
+- Running: softer LMR cut-node reduction (2048 -> 1536).
