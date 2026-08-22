@@ -369,6 +369,7 @@ int main(int argc, char** argv) {
     size_t maxSamples = 600000;
     bool includePSQT = false;
     int timeBudgetMin = 30;
+    int startStep = 8;
     std::string outPath = "tuned.h";
 
     for (int i = 1; i < argc; ++i) {
@@ -378,6 +379,7 @@ int main(int argc, char** argv) {
         else if (a == "-t" && i + 1 < argc) NumThreads = std::atoi(argv[++i]);
         else if (a == "-o" && i + 1 < argc) outPath = argv[++i];
         else if (a == "-mins" && i + 1 < argc) timeBudgetMin = std::atoi(argv[++i]);
+        else if (a == "-step" && i + 1 < argc) startStep = std::atoi(argv[++i]);
         else files.push_back(a);
     }
     if (files.empty()) { std::cout << "usage: tuner [-n N] [-t T] [-psqt] [-mins M] [-o out.h] data...\n"; return 1; }
@@ -412,7 +414,7 @@ int main(int argc, char** argv) {
     double best = total_error();
     const double startErr = best;
 
-    for (int step = 8; step >= 1 && minutes() < timeBudgetMin; step /= 2) {
+    for (int step = startStep; step >= 1 && minutes() < timeBudgetMin; step /= 2) {
         bool improved = true;
         int sweep = 0;
         while (improved && minutes() < timeBudgetMin) {

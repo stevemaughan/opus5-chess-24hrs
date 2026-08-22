@@ -32,7 +32,7 @@
         "additional_lines_rgx": [],
         "event_name": "Fastchess Tournament",
         "site": "?",
-        "file": "source\\tests\\sanity_infofix.pgn",
+        "file": "source\\tests\\sprt_fine.pgn",
         "notation": 0,
         "append_file": true,
         "track_nodes": false,
@@ -51,16 +51,16 @@
         "append_file": true
     },
     "sprt": {
-        "alpha": 0.0,
-        "beta": 0.0,
+        "alpha": 0.05,
+        "beta": 0.05,
         "elo0": 0.0,
-        "elo1": 0.0,
+        "elo1": 6.0,
         "model": "normalized",
-        "enabled": false
+        "enabled": true
     },
     "config_name": "config.json",
     "output": 0,
-    "seed": 14443648089342798606,
+    "seed": 7906820638357844124,
     "variant": 0,
     "type": 0,
     "gauntlet_seeds": 1,
@@ -69,7 +69,7 @@
     "wait": 0,
     "autosaveinterval": 20,
     "games": 2,
-    "rounds": 110,
+    "rounds": 3000,
     "concurrency": 10,
     "force_concurrency": false,
     "recover": true,
@@ -89,9 +89,9 @@
     },
     "engines": [
         {
-            "name": "infofix",
+            "name": "fine",
             "dir": "",
-            "cmd": "source\\build\\infofix.exe",
+            "cmd": "source\\build\\fine.exe",
             "args": "",
             "restart": false,
             "options": [
@@ -140,16 +140,16 @@
         }
     ],
     "stats": {
-        "infofix vs cur": {
-            "wins": 56,
-            "losses": 53,
-            "draws": 111,
-            "penta_WW": 3,
-            "penta_WD": 30,
-            "penta_WL": 20,
-            "penta_DD": 26,
-            "penta_LD": 29,
-            "penta_LL": 2
+        "fine vs cur": {
+            "wins": 213,
+            "losses": 139,
+            "draws": 286,
+            "penta_WW": 22,
+            "penta_WD": 108,
+            "penta_WL": 61,
+            "penta_DD": 64,
+            "penta_LD": 50,
+            "penta_LL": 14
         }
     }
 }

@@ -418,3 +418,35 @@ unity build, so the simpler non-PGO binary ships.
 Remaining time goes to a confirmation match on the shipped binary. No further code
 changes: with eight consecutive null experiments behind me, the expected value of
 another change is far below the risk of disturbing a verified, measured deliverable.
+
+## 20.1 h elapsed (measured) — fine-granularity tuning: +39.7 Elo
+I noticed something I had missed: **the tuner had never once got below step size 8.**
+Every tuning run so far spent its whole budget on the coarse pass, so the evaluation
+had only ever been optimised at a granularity of 8 centipawns. That is a genuinely
+different experiment from re-running the same search on new data, which is why it was
+worth doing after four cycles of diminishing returns.
+
+Added a `-step` option and ran coordinate descent at **step 2** on all three newest
+datasets pooled (**6.0M positions**, 1M samples): error 0.086374 -> 0.085833.
+A small error move, but a real one, and it clears the bar in play:
+
+**SPRT: +39.7 Elo +/- 18.6 over 598 games** (2.1 SD, LLR 1.60), and consistent as it
+accumulated - 58.3% at 200 games, 55.4% at 398, 55.7% at 598.
+
+Deployed. To remove any doubt about what is shipping, `final/` is the *exact binary*
+that was SPRT-tested, copied rather than rebuilt (a rebuild of identical source differs
+byte-wise because GCC embeds paths and timestamps, though it benches identically).
+
+Verification of the shipped `final/Opus5chess24hrs.exe`:
+
+| Check | Result |
+|---|---|
+| `id name` / `id author` | `Opus 5 chess 24hrs` / `Opus 5` |
+| Dependencies | **KERNEL32.dll, msvcrt.dll only** |
+| perft, 126 positions, depths 1-6 | **756/756, 0 failures, 12,814,553,817 nodes** |
+| fastchess `--compliance` | **40/40 passed** |
+| Clock edge cases (`wtime 0`, `wtime 1`, `movetime 1`, `depth 1`, bare `movestogo`) | legal move, 113-151 ms |
+| `go infinite` + `stop` | prompt bestmove |
+| 10+0.1 first move | 542 ms |
+| PV / bestmove consistency | **0 mismatches in 8 timed searches** |
+| SHA-256 | `6653CF9EB025E37107E641FB04E8DA429C218521303351D68853F5B2CDB6414C` |
