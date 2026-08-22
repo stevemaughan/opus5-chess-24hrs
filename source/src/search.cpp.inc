@@ -58,6 +58,21 @@ Position* RootPos = nullptr;
 #ifndef ASP_DELTA
 #define ASP_DELTA 10
 #endif
+#ifndef SINGULAR_DEPTH
+#define SINGULAR_DEPTH 6
+#endif
+#ifndef NMP_BASE
+#define NMP_BASE 4
+#endif
+#ifndef RFP_MARGIN
+#define RFP_MARGIN 86
+#endif
+#ifndef FUT_MARGIN
+#define FUT_MARGIN 138
+#endif
+#ifndef LMP_BASE
+#define LMP_BASE 3
+#endif
 
 // Bitmask used to disable individual pruning features while bisecting search behaviour.
 // Set the PRUNEMASK environment variable to a decimal value; every bit set means "on".
@@ -546,7 +561,7 @@ Value search(Position& pos, Stack* ss, Value alpha, Value beta, int depth, bool 
 
     // ---- Step 6: reverse futility / static null move pruning ----
     if (!ss->ttPv && pruning_on(P_RFP) && depth < 11
-        && eval - (86 * (depth - improving) - 20 * (ss - 1)->statScore / 256) >= beta
+        && eval - (RFP_MARGIN * (depth - improving) - 20 * (ss - 1)->statScore / 256) >= beta
         && eval >= beta && eval < 25000 && (!ttMove || ttCapture))
         return (eval + beta) / 2;
 
@@ -556,7 +571,7 @@ Value search(Position& pos, Stack* ss, Value alpha, Value beta, int depth, bool 
         && pos.non_pawn_material(us) > 0 && ss->ply >= NmpMinPly
         && beta > VALUE_MATED_IN_MAX_PLY) {
 
-        int R = std::min(int(eval - beta) / 202, 6) + depth / 3 + 4;
+        int R = std::min(int(eval - beta) / 202, 6) + depth / 3 + NMP_BASE;
         ss->currentMove = MOVE_NULL;
         ss->continuationHistory = &Hist.continuation[0][0][NO_PIECE][0];
 
@@ -651,7 +666,7 @@ moves_loop:
             // ---- Step 11: pruning at shallow depth ----
             if (!rootNode && pos.non_pawn_material(us) > 0 && bestValue > VALUE_MATED_IN_MAX_PLY) {
                 // Move-count (late move) pruning
-                if (!skipQuiets && pruning_on(P_LMP) && moveCount >= (3 + depth * depth) / (2 - improving))
+                if (!skipQuiets && pruning_on(P_LMP) && moveCount >= (LMP_BASE + depth * depth) / (2 - improving))
                     skipQuiets = true;
 
                 int lmrDepth = std::max(0, newDepth - r / 1024);
@@ -674,7 +689,7 @@ moves_loop:
                     // Futility pruning at low depth
                     if (pruning_on(P_FUTILITY) && !ss->inCheck && lmrDepth < 12
                         && ss->staticEval != VALUE_NONE
-                        && ss->staticEval + 112 + 138 * lmrDepth <= alpha)
+                        && ss->staticEval + 112 + FUT_MARGIN * lmrDepth <= alpha)
                         continue;
 
                     // SEE pruning for quiets
