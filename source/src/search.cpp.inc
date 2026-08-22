@@ -908,6 +908,14 @@ void clear() {
     Eval::clear_pawn_table();
 }
 
+// Used at start-up, where TT::resize has just handed back an already-zeroed table.
+// Skipping the redundant 256 MB memset halves the memory traffic every engine
+// process generates while starting, which is what a match manager sees as a stall.
+void clear_soft() {
+    Hist.clear();
+    Eval::clear_pawn_table();
+}
+
 // ---------------------------------------------------------------------------
 // Iterative deepening driver, run on the search thread
 // ---------------------------------------------------------------------------

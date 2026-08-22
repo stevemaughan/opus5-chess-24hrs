@@ -450,3 +450,29 @@ Verification of the shipped `final/Opus5chess24hrs.exe`:
 | 10+0.1 first move | 542 ms |
 | PV / bestmove consistency | **0 mismatches in 8 timed searches** |
 | SHA-256 | `6653CF9EB025E37107E641FB04E8DA429C218521303351D68853F5B2CDB6414C` |
+
+## 22.3 h elapsed (measured) — start-up stall found and fixed
+The final validation gauntlet (480 games) reported **`Crashed: 1`** for my engine. It
+was worth chasing rather than dismissing as noise, and it was not a crash: the log says
+**"Engine final is not responsive"** on game 5, i.e. during the start-up burst when all
+twenty engine processes launch at once.
+
+Cause: `TT::resize()` did `malloc` + `memset` of 256 MB, and then `main()` called
+`Search::clear()` which memset the same 256 MB **again** — 512 MB of zeroing per
+process, twenty processes at once, roughly 10 GB of memory traffic in one burst. Under
+that contention one process took long enough to answer that the match manager gave up
+on it. A stall is scored as a loss, so this is worth real Elo in a concurrent match.
+
+Fixes:
+- allocate with `calloc`, not `malloc` + `memset`: for a block this size the allocator
+  returns OS zero-pages committed lazily, so the zeroing is not paid up front;
+- drop the redundant start-up clear (`clear_soft()` clears histories only, since the
+  table `resize` just returned is already zero);
+- if every allocation size fails, fall back to a tiny static table instead of leaving
+  `table == nullptr`, which the old code did and which the first probe would have
+  dereferenced — a latent real crash.
+
+Measured: **start-up to first move halved, 200 ms -> 97 ms** (mean of five runs each),
+and the search is provably untouched — identical bench node count at fixed depth
+(215726 both). Full re-verification passed: perft 756/756 (12.8e9 nodes), compliance
+40/40, standalone, all clock edge cases, and `Hash 1` as well as `Hash 256`.

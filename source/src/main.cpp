@@ -18,7 +18,7 @@ int main(int argc, char** argv) {
     Eval::init();
     Search::init();
     TT.resize(size_t(Search::Options.hashMB));
-    Search::clear();
+    Search::clear_soft();
 
     UCI::loop(argc, argv);
     return 0;

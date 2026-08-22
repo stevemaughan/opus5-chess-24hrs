@@ -70,6 +70,7 @@ extern std::vector<RootMove> RootMoves;
 
 void init();
 void clear();
+void clear_soft();      // histories only; the TT is already zeroed after resize
 void think(Position& pos);        // runs in the search thread
 Value search_quiet(Position& pos, const LimitsType& lim, Move& bestMove);
 int64_t now();

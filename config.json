@@ -32,7 +32,7 @@
         "additional_lines_rgx": [],
         "event_name": "Fastchess Tournament",
         "site": "?",
-        "file": "source\\tests\\sprt_fine.pgn",
+        "file": "source\\tests\\final_validation.pgn",
         "notation": 0,
         "append_file": true,
         "track_nodes": false,
@@ -51,25 +51,25 @@
         "append_file": true
     },
     "sprt": {
-        "alpha": 0.05,
-        "beta": 0.05,
+        "alpha": 0.0,
+        "beta": 0.0,
         "elo0": 0.0,
-        "elo1": 6.0,
+        "elo1": 0.0,
         "model": "normalized",
-        "enabled": true
+        "enabled": false
     },
     "config_name": "config.json",
     "output": 0,
-    "seed": 7906820638357844124,
+    "seed": 18266214892695680482,
     "variant": 0,
-    "type": 0,
+    "type": 1,
     "gauntlet_seeds": 1,
     "ratinginterval": 100,
     "scoreinterval": 1,
     "wait": 0,
     "autosaveinterval": 20,
     "games": 2,
-    "rounds": 3000,
+    "rounds": 120,
     "concurrency": 10,
     "force_concurrency": false,
     "recover": true,
@@ -89,9 +89,9 @@
     },
     "engines": [
         {
-            "name": "fine",
+            "name": "final",
             "dir": "",
-            "cmd": "source\\build\\fine.exe",
+            "cmd": "final\\Opus5chess24hrs.exe",
             "args": "",
             "restart": false,
             "options": [
@@ -114,9 +114,34 @@
             "variant": 0
         },
         {
-            "name": "cur",
+            "name": "s30",
             "dir": "",
-            "cmd": "final\\Opus5chess24hrs.exe",
+            "cmd": "resources\\engines\\stash-30.0-windows-x86_64-bmi2.exe",
+            "args": "",
+            "restart": false,
+            "options": [
+                [
+                    "Hash",
+                    "256"
+                ]
+            ],
+            "limit": {
+                "tc": {
+                    "increment": 100,
+                    "fixed_time": 0,
+                    "time": 10000,
+                    "moves": 0,
+                    "timemargin": 0
+                },
+                "nodes": 0,
+                "plies": 0
+            },
+            "variant": 0
+        },
+        {
+            "name": "s25",
+            "dir": "",
+            "cmd": "resources\\engines\\stash-25.0-windows-x86_64-bmi2.exe",
             "args": "",
             "restart": false,
             "options": [
@@ -140,16 +165,38 @@
         }
     ],
     "stats": {
-        "fine vs cur": {
-            "wins": 213,
-            "losses": 139,
-            "draws": 286,
-            "penta_WW": 22,
-            "penta_WD": 108,
-            "penta_WL": 61,
-            "penta_DD": 64,
-            "penta_LD": 50,
-            "penta_LL": 14
+        "s30 vs s25": {
+            "wins": 0,
+            "losses": 0,
+            "draws": 0,
+            "penta_WW": 0,
+            "penta_WD": 0,
+            "penta_WL": 0,
+            "penta_DD": 0,
+            "penta_LD": 0,
+            "penta_LL": 0
+        },
+        "final vs s25": {
+            "wins": 176,
+            "losses": 18,
+            "draws": 46,
+            "penta_WW": 62,
+            "penta_WD": 37,
+            "penta_WL": 15,
+            "penta_DD": 3,
+            "penta_LD": 3,
+            "penta_LL": 0
+        },
+        "final vs s30": {
+            "wins": 98,
+            "losses": 70,
+            "draws": 72,
+            "penta_WW": 18,
+            "penta_WD": 24,
+            "penta_WL": 38,
+            "penta_DD": 16,
+            "penta_LD": 16,
+            "penta_LL": 8
         }
     }
 }
