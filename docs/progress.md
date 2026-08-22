@@ -476,3 +476,34 @@ Measured: **start-up to first move halved, 200 ms -> 97 ms** (mean of five runs 
 and the search is provably untouched — identical bench node count at fixed depth
 (215726 both). Full re-verification passed: perft 756/756 (12.8e9 nodes), compliance
 40/40, standalone, all clock edge cases, and `Hash 1` as well as `Hash 256`.
+
+## 22.0 h elapsed (measured) — reverted the extra info line for reliability
+A second "engine not responsive" loss appeared at game 412 of the final measurement,
+*after* the start-up fix — so the start-up burst was not the whole story. Looking at
+the record by build:
+
+| Build | Games | Stalls |
+|---|---|---|
+| before the extra info line | 600 | **0** |
+| with the extra info line | ~1140 | **2** |
+
+Two events is thin evidence, but the mechanism is real: an engine that writes more to
+a pipe the match manager is not draining can block on the write, inside the search
+thread. And the trade is completely one-sided — the info line only removed a cosmetic
+"bestmove does not match last PV" warning that fastchess does not score, whereas a
+stall is scored as a **loss**.
+
+So I reverted it, and left the reasoning in the code so it is not "fixed" again later.
+The engine still meets the requirement (an info line at least once per completed
+iteration); it just declines the optional "ideally, whenever the best move changes".
+
+The revert is output-only: the search benches to the identical node count (215726).
+
+### Final measurement before the revert (600 games, tc=10+0.1, Hash 256)
+| Opponent | CCRL Blitz | My score | Elo diff | Implied |
+|---|---|---|---|---|
+| stash-30 | ~3170 | 63.3% | +94  | ~3264 |
+| stash-25 | ~2940 | 88.3% | +352 | ~3292 |
+
+Because the revert changes no search behaviour, these numbers carry over to the
+shipped build.

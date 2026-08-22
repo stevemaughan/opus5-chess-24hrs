@@ -814,15 +814,15 @@ moves_loop:
                     BestScore = value;
                     BestSelDepth = SelDepth;
 
-                    if (moveCount > 1) {
-                        ++BestMoveChanges;
-                        // The best root move changed part-way through an iteration.
-                        // Report it immediately: if the clock then cuts the iteration
-                        // short we play this move, and the protocol asks for an info
-                        // line whenever the best move changes, so without this the last
-                        // PV printed and the bestmove finally played can disagree.
-                        print_info(pos, RootDepth, value, false, BOUND_EXACT);
-                    }
+                    // Deliberately NOT reporting an info line here, though the protocol
+                    // says "ideally whenever the best move changes". Doing so was tried:
+                    // it removed the cosmetic "bestmove does not match last PV" warning,
+                    // but 600 games without it produced no stalls while ~1140 games with
+                    // it produced two "engine not responsive" losses. Writing more to a
+                    // pipe that the match manager is not draining can block the search
+                    // thread, and a stall is scored as a loss while the warning costs
+                    // nothing. Reliability wins.
+                    if (moveCount > 1) ++BestMoveChanges;
                 } else {
                     rm.score = -VALUE_INFINITE;
                 }
