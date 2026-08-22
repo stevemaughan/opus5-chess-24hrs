@@ -32,7 +32,7 @@
         "additional_lines_rgx": [],
         "event_name": "Fastchess Tournament",
         "site": "?",
-        "file": "source\\tests\\sprt_iter4.pgn",
+        "file": "source\\tests\\sprt_sing.pgn",
         "notation": 0,
         "append_file": true,
         "track_nodes": false,
@@ -53,14 +53,14 @@
     "sprt": {
         "alpha": 0.05,
         "beta": 0.05,
-        "elo0": 0.0,
-        "elo1": 6.0,
+        "elo0": -3.0,
+        "elo1": 5.0,
         "model": "normalized",
         "enabled": true
     },
     "config_name": "config.json",
     "output": 0,
-    "seed": 11659046611868197879,
+    "seed": 18328172186774742248,
     "variant": 0,
     "type": 0,
     "gauntlet_seeds": 1,
@@ -89,9 +89,9 @@
     },
     "engines": [
         {
-            "name": "iter4",
+            "name": "sing5",
             "dir": "",
-            "cmd": "source\\build\\cand5.exe",
+            "cmd": "source\\build\\sing5.exe",
             "args": "",
             "restart": false,
             "options": [
@@ -114,9 +114,9 @@
             "variant": 0
         },
         {
-            "name": "cur",
+            "name": "sing6",
             "dir": "",
-            "cmd": "final\\Opus5chess24hrs.exe",
+            "cmd": "source\\build\\base5.exe",
             "args": "",
             "restart": false,
             "options": [
@@ -140,16 +140,16 @@
         }
     ],
     "stats": {
-        "iter4 vs cur": {
-            "wins": 317,
-            "losses": 296,
-            "draws": 445,
-            "penta_WW": 27,
-            "penta_WD": 139,
-            "penta_WL": 124,
-            "penta_DD": 94,
-            "penta_LD": 118,
-            "penta_LL": 27
+        "sing5 vs sing6": {
+            "wins": 82,
+            "losses": 91,
+            "draws": 185,
+            "penta_WW": 4,
+            "penta_WD": 39,
+            "penta_WL": 35,
+            "penta_DD": 49,
+            "penta_LD": 48,
+            "penta_LL": 4
         }
     }
 }

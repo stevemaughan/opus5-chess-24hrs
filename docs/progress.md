@@ -291,3 +291,32 @@ value only.
   a lower tuning error is not the same thing as more Elo, and the SPRT is the only
   thing that settled it.
 - Remaining time is going to search-parameter tests and final verification.
+
+## 15.2 h elapsed (measured) — search parameters are at a local optimum
+Every search A/B came back neutral or worse, so nothing was changed:
+| Change | Result |
+|---|---|
+| more time per move (div 24/30) | -23 Elo +/- 22 (300 games) |
+| less time per move (div 34/40) | -27 Elo +/- 42 (102 games) |
+| LMR cut-node reduction 2048 -> 1536 | -6.9 Elo +/- 26 (302 games) |
+| quiescence width 2 -> 4 | +7.6 Elo +/- 18 (504 games), 0.4 SD - not shipped |
+| singular extension depth 6 -> 5 | -8.1 Elo +/- 23 (300 games) |
+
+I adopted an explicit rule for the endgame of the run: **ship a change only if its
+point estimate is at least 1.5 SD above zero.** Two changes (tuning cycle 4 at 0.43 SD,
+quiescence width at 0.42 SD) were positive but failed that bar and were dropped. Late
+in a fixed-time run the asymmetry matters - an unverified change that turns out
+negative costs more than a marginal one gains.
+
+## Final verification of the deliverable
+- `id name Opus 5 chess 24hrs`, `id author Opus 5` — correct.
+- Dependencies: **KERNEL32.dll and msvcrt.dll only** — fully standalone.
+- **perft suite on the shipped binary: 756/756 checks, 0 failures, 12.8 billion nodes**
+  (all 126 positions, depths 1-6).
+- fastchess `--compliance`: 40/40.
+- `setoption name Hash value 256` from cold, exactly as the rating harness sets it:
+  reaches depth 20 in 463 ms at 10+0.1.
+- Clock edge cases all return a legal move in ~120 ms: `wtime 0`, `wtime 1`,
+  `wtime 20`, `movetime 1`, `depth 1`, bare `movestogo 40`, `movestogo 1`.
+- `go infinite` + `stop` returns promptly; unknown commands and unknown options are
+  ignored rather than fatal.
