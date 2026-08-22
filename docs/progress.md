@@ -271,3 +271,23 @@ none from my engine, so the hour-0.8 fix is holding.
 
 - Next: one more data/tune cycle using the current (much stronger) engine, then final
   verification with a wide time margin.
+
+## Note on the hour labels
+The headings above were written from my own running estimate and drifted ahead of the
+clock; measured against `docs/start_time.txt` the gauntlet entry labelled "Hour 15.3"
+actually happened at about hour 12.5. The measured figure at the time of writing this
+note is **13.5 h elapsed, 10.5 h remaining**. Entries from here on quote the measured
+value only.
+
+## 13.5 h elapsed (measured) — evaluation tuning has saturated
+- Tuning cycle 4 (fresh data from the post-king-safety-fix engine, 1.96M positions,
+  error 0.087601 -> 0.086394): **rejected.** SPRT ran to 998 games and the estimate
+  drifted +20 -> +11 -> +7 -> **+6.3 +/- 14.5** as games accumulated, which is what an
+  effect near zero looks like. Shipping a change I cannot demonstrate helps, this late,
+  is a bad trade.
+- Final tally for the tuning pipeline: **+198, +47, rejected, +56 (king-safety
+  restructure), rejected.** Four accepted changes out of six attempts, and the two
+  rejections both came after the error metric said "better". Worth stating plainly:
+  a lower tuning error is not the same thing as more Elo, and the SPRT is the only
+  thing that settled it.
+- Remaining time is going to search-parameter tests and final verification.

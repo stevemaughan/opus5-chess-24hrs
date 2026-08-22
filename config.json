@@ -32,7 +32,7 @@
         "additional_lines_rgx": [],
         "event_name": "Fastchess Tournament",
         "site": "?",
-        "file": "source\\tests\\gauntlet2.pgn",
+        "file": "source\\tests\\sprt_iter4.pgn",
         "notation": 0,
         "append_file": true,
         "track_nodes": false,
@@ -51,25 +51,25 @@
         "append_file": true
     },
     "sprt": {
-        "alpha": 0.0,
-        "beta": 0.0,
+        "alpha": 0.05,
+        "beta": 0.05,
         "elo0": 0.0,
-        "elo1": 0.0,
+        "elo1": 6.0,
         "model": "normalized",
-        "enabled": false
+        "enabled": true
     },
     "config_name": "config.json",
     "output": 0,
-    "seed": 3693080623820841026,
+    "seed": 11659046611868197879,
     "variant": 0,
-    "type": 1,
+    "type": 0,
     "gauntlet_seeds": 1,
     "ratinginterval": 50,
     "scoreinterval": 1,
     "wait": 0,
     "autosaveinterval": 20,
     "games": 2,
-    "rounds": 75,
+    "rounds": 3000,
     "concurrency": 10,
     "force_concurrency": false,
     "recover": true,
@@ -89,84 +89,34 @@
     },
     "engines": [
         {
-            "name": "mine",
+            "name": "iter4",
+            "dir": "",
+            "cmd": "source\\build\\cand5.exe",
+            "args": "",
+            "restart": false,
+            "options": [
+                [
+                    "Hash",
+                    "256"
+                ]
+            ],
+            "limit": {
+                "tc": {
+                    "increment": 100,
+                    "fixed_time": 0,
+                    "time": 10000,
+                    "moves": 0,
+                    "timemargin": 0
+                },
+                "nodes": 0,
+                "plies": 0
+            },
+            "variant": 0
+        },
+        {
+            "name": "cur",
             "dir": "",
             "cmd": "final\\Opus5chess24hrs.exe",
-            "args": "",
-            "restart": false,
-            "options": [
-                [
-                    "Hash",
-                    "256"
-                ]
-            ],
-            "limit": {
-                "tc": {
-                    "increment": 100,
-                    "fixed_time": 0,
-                    "time": 10000,
-                    "moves": 0,
-                    "timemargin": 0
-                },
-                "nodes": 0,
-                "plies": 0
-            },
-            "variant": 0
-        },
-        {
-            "name": "s21",
-            "dir": "",
-            "cmd": "resources\\engines\\stash-21.0-windows-x86_64-bmi2.exe",
-            "args": "",
-            "restart": false,
-            "options": [
-                [
-                    "Hash",
-                    "256"
-                ]
-            ],
-            "limit": {
-                "tc": {
-                    "increment": 100,
-                    "fixed_time": 0,
-                    "time": 10000,
-                    "moves": 0,
-                    "timemargin": 0
-                },
-                "nodes": 0,
-                "plies": 0
-            },
-            "variant": 0
-        },
-        {
-            "name": "s25",
-            "dir": "",
-            "cmd": "resources\\engines\\stash-25.0-windows-x86_64-bmi2.exe",
-            "args": "",
-            "restart": false,
-            "options": [
-                [
-                    "Hash",
-                    "256"
-                ]
-            ],
-            "limit": {
-                "tc": {
-                    "increment": 100,
-                    "fixed_time": 0,
-                    "time": 10000,
-                    "moves": 0,
-                    "timemargin": 0
-                },
-                "nodes": 0,
-                "plies": 0
-            },
-            "variant": 0
-        },
-        {
-            "name": "s30",
-            "dir": "",
-            "cmd": "resources\\engines\\stash-30.0-windows-x86_64-bmi2.exe",
             "args": "",
             "restart": false,
             "options": [
@@ -190,71 +140,16 @@
         }
     ],
     "stats": {
-        "s21 vs s25": {
-            "wins": 0,
-            "losses": 0,
-            "draws": 0,
-            "penta_WW": 0,
-            "penta_WD": 0,
-            "penta_WL": 0,
-            "penta_DD": 0,
-            "penta_LD": 0,
-            "penta_LL": 0
-        },
-        "s25 vs s30": {
-            "wins": 0,
-            "losses": 0,
-            "draws": 0,
-            "penta_WW": 0,
-            "penta_WD": 0,
-            "penta_WL": 0,
-            "penta_DD": 0,
-            "penta_LD": 0,
-            "penta_LL": 0
-        },
-        "s21 vs s30": {
-            "wins": 0,
-            "losses": 0,
-            "draws": 0,
-            "penta_WW": 0,
-            "penta_WD": 0,
-            "penta_WL": 0,
-            "penta_DD": 0,
-            "penta_LD": 0,
-            "penta_LL": 0
-        },
-        "mine vs s30": {
-            "wins": 73,
-            "losses": 38,
-            "draws": 39,
-            "penta_WW": 16,
-            "penta_WD": 17,
-            "penta_WL": 24,
-            "penta_DD": 6,
-            "penta_LD": 10,
-            "penta_LL": 2
-        },
-        "mine vs s25": {
-            "wins": 118,
-            "losses": 9,
-            "draws": 23,
-            "penta_WW": 50,
-            "penta_WD": 13,
-            "penta_WL": 5,
-            "penta_DD": 3,
-            "penta_LD": 4,
-            "penta_LL": 0
-        },
-        "mine vs s21": {
-            "wins": 133,
-            "losses": 8,
-            "draws": 9,
-            "penta_WW": 59,
-            "penta_WD": 8,
-            "penta_WL": 7,
-            "penta_DD": 0,
-            "penta_LD": 1,
-            "penta_LL": 0
+        "iter4 vs cur": {
+            "wins": 317,
+            "losses": 296,
+            "draws": 445,
+            "penta_WW": 27,
+            "penta_WD": 139,
+            "penta_WL": 124,
+            "penta_DD": 94,
+            "penta_LD": 118,
+            "penta_LL": 27
         }
     }
 }
