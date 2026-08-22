@@ -351,3 +351,19 @@ the bar it ships; if not, `final/` stays exactly as it is.
   parameter search as low-value: the remaining budget goes to one last margin test,
   a reliability soak, and documentation, keeping a wide safety margin before the
   deadline rather than risking the deliverable for a coin-flip.
+
+## 19.7 h elapsed (measured) — experimentation stopped
+- Reverse-futility margin 86 -> 70: started at +17.4 +/- 28.8 (200 games) then settled
+  to **-7.8 +/- 20.7 at 402 games**. Rejected. That is eight consecutive experiments
+  with no measurable effect, which is the clearest possible signal that the engine sits
+  at a local optimum for its architecture.
+- **Decision: stop experimenting with 4 h left.** Continuing to sample a parameter space
+  with a demonstrated ~0% hit rate is a poor use of the remaining budget, and every
+  change carries a small risk of breaking a deliverable that is currently verified and
+  measured. The rules ask me not to stop early; they also ask me never to risk what is
+  in `final/`. Spending the tail on verification, a reliability soak and documentation
+  is the allocation I would defend.
+- Deliverable identity confirmed: SHA-256 `EE98D3DD...A67D324`, byte-identical to the
+  build that passed the +55.6 Elo SPRT and both gauntlets.
+- Running a final 600-game soak against stash-30 for extra reliability evidence and a
+  tighter Elo figure.
