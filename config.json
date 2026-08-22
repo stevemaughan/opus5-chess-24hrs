@@ -32,7 +32,7 @@
         "additional_lines_rgx": [],
         "event_name": "Fastchess Tournament",
         "site": "?",
-        "file": "source\\tests\\sprt_asp.pgn",
+        "file": "source\\tests\\soak.pgn",
         "notation": 0,
         "append_file": true,
         "track_nodes": false,
@@ -51,16 +51,16 @@
         "append_file": true
     },
     "sprt": {
-        "alpha": 0.05,
-        "beta": 0.05,
-        "elo0": -3.0,
-        "elo1": 5.0,
+        "alpha": 0.0,
+        "beta": 0.0,
+        "elo0": 0.0,
+        "elo1": 0.0,
         "model": "normalized",
-        "enabled": true
+        "enabled": false
     },
     "config_name": "config.json",
     "output": 0,
-    "seed": 4268408145498226350,
+    "seed": 16203544121965791104,
     "variant": 0,
     "type": 0,
     "gauntlet_seeds": 1,
@@ -69,7 +69,7 @@
     "wait": 0,
     "autosaveinterval": 20,
     "games": 2,
-    "rounds": 3000,
+    "rounds": 300,
     "concurrency": 10,
     "force_concurrency": false,
     "recover": true,
@@ -89,9 +89,9 @@
     },
     "engines": [
         {
-            "name": "asp20",
+            "name": "mine",
             "dir": "",
-            "cmd": "source\\build\\asp20.exe",
+            "cmd": "final\\Opus5chess24hrs.exe",
             "args": "",
             "restart": false,
             "options": [
@@ -114,9 +114,9 @@
             "variant": 0
         },
         {
-            "name": "asp10",
+            "name": "s30",
             "dir": "",
-            "cmd": "source\\build\\base5.exe",
+            "cmd": "resources\\engines\\stash-30.0-windows-x86_64-bmi2.exe",
             "args": "",
             "restart": false,
             "options": [
@@ -140,16 +140,16 @@
         }
     ],
     "stats": {
-        "asp20 vs asp10": {
-            "wins": 143,
-            "losses": 134,
-            "draws": 261,
-            "penta_WW": 8,
-            "penta_WD": 74,
-            "penta_WL": 53,
-            "penta_DD": 62,
-            "penta_LD": 63,
-            "penta_LL": 9
+        "mine vs s30": {
+            "wins": 277,
+            "losses": 172,
+            "draws": 151,
+            "penta_WW": 55,
+            "penta_WD": 79,
+            "penta_WL": 88,
+            "penta_DD": 18,
+            "penta_LD": 36,
+            "penta_LL": 24
         }
     }
 }

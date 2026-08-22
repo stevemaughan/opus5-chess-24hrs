@@ -367,3 +367,27 @@ the bar it ships; if not, `final/` stays exactly as it is.
   build that passed the +55.6 Elo SPRT and both gauntlets.
 - Running a final 600-game soak against stash-30 for extra reliability evidence and a
   tighter Elo figure.
+
+## 21.2 h elapsed (measured) — final reliability soak
+600 games against stash-30 at 10+0.1: **58.75% (+61.4 Elo +/- 23.3)**, and
+**zero timeouts, zero crashes, zero illegal moves**.
+
+Pooled across all three measurement runs, **1100 games against stash-30 alone**
+(150 + 350 + 600) at a combined ~59.7%, i.e. about +68 Elo over a ~3170 CCRL engine.
+Total games played against the ladder across the run: **1750**, with no reliability
+fault of any kind on my side.
+
+**Final Elo estimate: ~3230**, honest range ~3150-3280. The dominant uncertainty is
+not statistical - it is that the Stash anchors are CCRL ratings at 2'+1" and the match
+is at 10+0.1.
+
+## Last change: info line on a best-move change
+The soak surfaced two "bestmove does not match last PV" warnings. Diagnosed: a *new*
+best root move had been confirmed part-way through an iteration (it beat alpha at
+greater depth) and the clock then cut that iteration short, so the move played was
+newer than the last PV printed. Playing it is correct - it is the better move - but
+the protocol asks for an info line whenever the best move changes, and without one the
+output contradicts itself.
+Fixed by reporting immediately when the best root move changes. Verified: search
+behaviour byte-identical (same bench node count at fixed depth), and 0/10 PV/bestmove
+mismatches on timed searches that previously produced them.

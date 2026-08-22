@@ -814,7 +814,15 @@ moves_loop:
                     BestScore = value;
                     BestSelDepth = SelDepth;
 
-                    if (moveCount > 1) ++BestMoveChanges;
+                    if (moveCount > 1) {
+                        ++BestMoveChanges;
+                        // The best root move changed part-way through an iteration.
+                        // Report it immediately: if the clock then cuts the iteration
+                        // short we play this move, and the protocol asks for an info
+                        // line whenever the best move changes, so without this the last
+                        // PV printed and the bestmove finally played can disagree.
+                        print_info(pos, RootDepth, value, false, BOUND_EXACT);
+                    }
                 } else {
                     rm.score = -VALUE_INFINITE;
                 }
