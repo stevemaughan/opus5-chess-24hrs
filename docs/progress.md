@@ -320,3 +320,23 @@ negative costs more than a marginal one gains.
   `wtime 20`, `movetime 1`, `depth 1`, bare `movestogo 40`, `movestogo 1`.
 - `go infinite` + `stop` returns promptly; unknown commands and unknown options are
   ignored rather than fatal.
+
+## 16.9 h elapsed (measured) — second strength measurement
+Gauntlet 3, 700 games (350 per opponent), tc=10+0.1, Hash 256:
+
+| Opponent | CCRL Blitz | My score | Elo diff | Implied |
+|---|---|---|---|---|
+| stash-30 | ~3170 | 60.6% | +75  | ~3245 |
+| stash-25 | ~2940 | 82.6% | +270 | ~3210 |
+
+Pooled with gauntlet 2, that is **1150 games against the ladder**:
+- vs stash-30: 500 games, ~60.9% -> ~3247
+- vs stash-25: 500 games, ~83.7% -> ~3223
+
+**Settled estimate: ~3200-3250, best single point ~3230**, with the standing caveat
+that the Stash anchors are CCRL ratings at 2'+1" rather than at 10+0.1.
+
+Now running one last experiment: the two changes that were positive but individually
+below my 1.5 SD shipping bar (tuning cycle 4, +6.3; quiescence width, +7.6) combined
+into a single candidate, so that a ~+14 effect can actually be resolved. If it clears
+the bar it ships; if not, `final/` stays exactly as it is.
