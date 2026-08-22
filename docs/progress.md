@@ -245,3 +245,29 @@ measured elapsed time against `docs/start_time.txt`.
   harness-plumbing artefact, not an engine problem. Verified the staged binary by
   hand before copying it into `final/`.
 - Next: fresh gauntlet against the Stash ladder for an honest Elo estimate.
+
+## Hour 15.3 — 2026-08-22 04:00  — STRENGTH MEASUREMENT
+Gauntlet, 450 games (150 per opponent), tc=10+0.1, Hash 256, UHO book, both colours:
+
+| Opponent | CCRL Blitz | My score | Elo diff | Implied |
+|---|---|---|---|---|
+| stash-30 | ~3170 | 61.7% | +83  | ~3253 |
+| stash-25 | ~2940 | 86.3% | +320 | ~3260 |
+| stash-21 | ~2710 | 91.7% | +417 | ~3127 |
+
+The two nearest opponents agree closely (~3255). The stash-21 figure is lower because
+Elo differences compress when scores approach 100%, so the closest opponent is the
+informative one.
+
+**Best estimate: ~3200-3250**, and I want to be explicit about why that is not a
+precise claim: the Stash anchors are CCRL ratings at 2'+1", not at 10+0.1, and there
+is no reason a rating gap measured at one time control transfers exactly to another.
+A small, fast-evaluating engine like this one plausibly does relatively better at very
+fast controls. Treat ~3200 as the defensible number and ~3255 as the optimistic end.
+
+**Reliability: zero timeouts, zero crashes, zero illegal moves in 450 games.** All 24
+"bestmove does not match PV" warnings in the log came from stash-25 and stash-30 -
+none from my engine, so the hour-0.8 fix is holding.
+
+- Next: one more data/tune cycle using the current (much stronger) engine, then final
+  verification with a wide time margin.
