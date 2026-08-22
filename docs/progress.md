@@ -340,3 +340,14 @@ Now running one last experiment: the two changes that were positive but individu
 below my 1.5 SD shipping bar (tuning cycle 4, +6.3; quiescence width, +7.6) combined
 into a single candidate, so that a ~+14 effect can actually be resolved. If it clears
 the bar it ships; if not, `final/` stays exactly as it is.
+
+## 18.6 h elapsed (measured) — the combined-candidate experiment failed, as the bar predicted
+- Combining tuning cycle 4 with the wider quiescence search - the two changes that were
+  positive but below the 1.5 SD bar - gave **-2.6 Elo +/- 23.6 over 398 games**. Both
+  were noise, and the shipping bar was the right call. Nothing changed in `final/`.
+- Aspiration window 10 -> 20: **+4.3 Elo +/- 21.4 over 400 games** (0.2 SD). Neutral.
+- That makes seven consecutive search/eval experiments with no measurable effect. The
+  engine is at a local optimum for its architecture, and I am treating further
+  parameter search as low-value: the remaining budget goes to one last margin test,
+  a reliability soak, and documentation, keeping a wide safety margin before the
+  deadline rather than risking the deliverable for a coin-flip.

@@ -32,7 +32,7 @@
         "additional_lines_rgx": [],
         "event_name": "Fastchess Tournament",
         "site": "?",
-        "file": "source\\tests\\gauntlet3.pgn",
+        "file": "source\\tests\\sprt_asp.pgn",
         "notation": 0,
         "append_file": true,
         "track_nodes": false,
@@ -51,25 +51,25 @@
         "append_file": true
     },
     "sprt": {
-        "alpha": 0.0,
-        "beta": 0.0,
-        "elo0": 0.0,
-        "elo1": 0.0,
+        "alpha": 0.05,
+        "beta": 0.05,
+        "elo0": -3.0,
+        "elo1": 5.0,
         "model": "normalized",
-        "enabled": false
+        "enabled": true
     },
     "config_name": "config.json",
     "output": 0,
-    "seed": 17721273380818110040,
+    "seed": 4268408145498226350,
     "variant": 0,
-    "type": 1,
+    "type": 0,
     "gauntlet_seeds": 1,
-    "ratinginterval": 50,
+    "ratinginterval": 100,
     "scoreinterval": 1,
     "wait": 0,
     "autosaveinterval": 20,
     "games": 2,
-    "rounds": 175,
+    "rounds": 3000,
     "concurrency": 10,
     "force_concurrency": false,
     "recover": true,
@@ -89,9 +89,9 @@
     },
     "engines": [
         {
-            "name": "mine",
+            "name": "asp20",
             "dir": "",
-            "cmd": "final\\Opus5chess24hrs.exe",
+            "cmd": "source\\build\\asp20.exe",
             "args": "",
             "restart": false,
             "options": [
@@ -114,34 +114,9 @@
             "variant": 0
         },
         {
-            "name": "s30",
+            "name": "asp10",
             "dir": "",
-            "cmd": "resources\\engines\\stash-30.0-windows-x86_64-bmi2.exe",
-            "args": "",
-            "restart": false,
-            "options": [
-                [
-                    "Hash",
-                    "256"
-                ]
-            ],
-            "limit": {
-                "tc": {
-                    "increment": 100,
-                    "fixed_time": 0,
-                    "time": 10000,
-                    "moves": 0,
-                    "timemargin": 0
-                },
-                "nodes": 0,
-                "plies": 0
-            },
-            "variant": 0
-        },
-        {
-            "name": "s25",
-            "dir": "",
-            "cmd": "resources\\engines\\stash-25.0-windows-x86_64-bmi2.exe",
+            "cmd": "source\\build\\base5.exe",
             "args": "",
             "restart": false,
             "options": [
@@ -165,38 +140,16 @@
         }
     ],
     "stats": {
-        "s30 vs s25": {
-            "wins": 0,
-            "losses": 0,
-            "draws": 0,
-            "penta_WW": 0,
-            "penta_WD": 0,
-            "penta_WL": 0,
-            "penta_DD": 0,
-            "penta_LD": 0,
-            "penta_LL": 0
-        },
-        "mine vs s25": {
-            "wins": 263,
-            "losses": 35,
-            "draws": 52,
-            "penta_WW": 96,
-            "penta_WD": 41,
-            "penta_WL": 30,
-            "penta_DD": 3,
-            "penta_LD": 5,
-            "penta_LL": 0
-        },
-        "mine vs s30": {
-            "wins": 169,
-            "losses": 95,
-            "draws": 86,
-            "penta_WW": 37,
-            "penta_WD": 44,
-            "penta_WL": 51,
-            "penta_DD": 10,
-            "penta_LD": 22,
-            "penta_LL": 11
+        "asp20 vs asp10": {
+            "wins": 143,
+            "losses": 134,
+            "draws": 261,
+            "penta_WW": 8,
+            "penta_WD": 74,
+            "penta_WL": 53,
+            "penta_DD": 62,
+            "penta_LD": 63,
+            "penta_LL": 9
         }
     }
 }
