@@ -404,12 +404,72 @@ docs/progress.md            the hour-by-hour record of the run
 
 ## Official results
 
-*To be filled in by the benchmark operator after the rating match.*
+Rated by the benchmark operator on 2 September 2026 in a single 3,800-game
+run covering all four engines in the series.
 
-| | |
-|---|---|
-| Rating | |
-| Games | |
-| Time control | |
-| Opponents | |
-| Notes | |
+**Opus 5 chess 24hrs: 3242 Elo ±23 (95% CI), CCRL Blitz scale**, from
+1,100 games, 51.5% score.
+
+### How the rating was measured
+
+- Tool: fastchess 1.8.2, time control **10 s + 0.1 s**, one thread, 64 MB hash,
+  `timemargin 200`.
+- Openings: UHO unbalanced 8-ply book, random order, every opening played with
+  both colours.
+- Adjudication: resign after 3 moves at ±600 cp (two-sided); draw after move 40
+  when 8 consecutive moves stay within ±20 cp; 250-move cap. `-recover` on.
+- Format: a gauntlet against anchor engines whose ratings were fixed at their
+  CCRL Blitz values, plus a round robin among the four AI engines in the
+  series. Ratings come from an anchored maximum-likelihood Elo fit over all
+  3,800 games.
+- Hardware: AMD Ryzen AI 9 HX 375 laptop, one game per physical core
+  (12 concurrent games).
+- Anchors (CCRL Blitz): Stash 20 (2512), Stash 21 (2714), Juggernaut 2.01
+  (2760), Stash 25 (2932), Crafty 25.6 (2970), Stash 27 (3049), Stash 29
+  (3128), Stash 30 (3154), Stash 32 (3241), Stash 33 (3274), Stash 35 (3347),
+  Stash 37 (3424).
+
+### Head-to-head
+
+Opponent ratings in parentheses are the other AI engines' fitted values
+from this run; the rest are fixed CCRL Blitz anchors. "Implied Elo" is
+the rating this single match alone would give.
+
+| Opponent | Rating | W | D | L | Score | Implied Elo |
+|---|---:|---:|---:|---:|---:|---:|
+| Stash 37 | 3424 | 20 | 51 | 89 | 28.4% | 3264 |
+| Stash 35 | 3347 | 21 | 58 | 81 | 31.2% | 3210 |
+| Fable 5.1 chess 24hrs | (3277) | 23 | 27 | 50 | 36.5% | – |
+| Stash 33 | 3274 | 42 | 58 | 60 | 44.4% | 3235 |
+| Stash 32 | 3241 | 56 | 43 | 61 | 48.4% | 3230 |
+| Stash 30 | 3154 | 92 | 33 | 35 | 67.8% | 3283 |
+| Fable 5 chess 24hrs | (3049) | 70 | 18 | 12 | 79.0% | – |
+| Sonnet 5 chess 24hrs | (2702) | 97 | 3 | 0 | 98.5% | – |
+
+### Benchmark series standings
+
+All four engines were rated in the same run, under identical conditions.
+
+| Engine | Elo | 95% CI | Games | Score |
+|---|---:|:---:|---:|---:|
+| Fable 5.1 chess 24hrs | 3277 | ±23 | 1100 | 56.2% |
+| Opus 5 chess 24hrs | 3242 | ±23 | 1100 | 51.5% |
+| Fable 5 chess 24hrs | 3049 | ±22 | 1100 | 48.8% |
+| Sonnet 5 chess 24hrs | 2702 | ±26 | 1100 | 31.4% |
+
+### Reading the number
+
+- The rating is on the **CCRL Blitz scale under 10+0.1 conditions**, not a
+  CCRL rating. Fitting all anchors freely stretched the Stash ladder by about
+  10% on this hardware and time control (Stash 20 fitted ~70 Elo low, Stash 35
+  ~70 high). Each AI engine was rated only against anchors within roughly
+  250 Elo of its own level, so the effect on its estimate is small.
+- The rating run used 64 MB hash rather than the 256 MB assumed in the
+  benchmark rules, so that all engines compared on equal terms.
+
+- The engine's own estimate above (about 3250, range 3180–3320) agrees with
+  the measured 3242 ±23. Opus 5 finished **second of the four engines** in
+  the series, 35 Elo behind Fable 5.1 (the head-to-head went 23–27–50 against
+  it).
+- Reliability: zero losses on time, disconnects or illegal moves in the
+  3,800-game run.
