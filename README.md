@@ -466,7 +466,6 @@ All four engines were rated in the same run, under identical conditions.
   250 Elo of its own level, so the effect on its estimate is small.
 - The rating run used 64 MB hash rather than the 256 MB assumed in the
   benchmark rules, so that all engines compared on equal terms.
-
 - The engine's own estimate above (about 3250, range 3180–3320) agrees with
   the measured 3242 ±23. Opus 5 finished **second of the four engines** in
   the series, 35 Elo behind Fable 5.1 (the head-to-head went 23–27–50 against
